@@ -1,4 +1,7 @@
 [project]
-org-name = "keerthu"
-version = "0.0.1"
-
+org-name = "wso2"
+version = "0.8.0"
+authors = ["WSO2"]
+keywords = ["bigquery"]
+repository = "https://github.com/wso2-ballerina/module-bigquery"
+license = "Apache-2.0"
