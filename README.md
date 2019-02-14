@@ -8,7 +8,7 @@ The Bigquery connector allows you to access and run queries on Bigquery through 
 
 | Ballerina Language Version  | Bigquery API Version |
 |:---------------------------:|:--------------------:|
-|  0.990.3                    |   V4                 |
+|  0.990.2                    |   V4                 |
 
 ##### Prerequisites
 Download the Ballerina [distribution](https://ballerina.io/downloads/).
@@ -59,12 +59,11 @@ public function main() {
     bigquery2:Client bigqueryClient = new(bigqueryConfig);
 
     // Invoke list projects function to list the projects.
-    var response = bigqueryClient->listProjects();
-    if (bigqueryRes is ProjectList) {
-        io:print(bigqueryRes);
+    var projects = bigqueryClient->listProjects();
+    if (projects is bigquery2:ProjectList) {
+        io:print("Projects: ", projects);
     } else {
-        // The error is printed.
-        io:println("Error:" + bigqueryRes);
+        io:println("Error: ", response);
     }
 }
 ```
