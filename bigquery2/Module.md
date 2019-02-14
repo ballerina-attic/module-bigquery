@@ -12,7 +12,7 @@ The `wso2/bigquery2` module contains operations that retrieve projects, tables, 
 
 |                             |       Version               |
 |:---------------------------:|:---------------------------:|
-| Ballerina Language          | 0.990.0                     |
+| Ballerina Language          | 0.990.2                     |
 | Bigquery API Version        | V2                          |
 
 ## Sample
