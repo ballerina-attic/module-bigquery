@@ -12,7 +12,7 @@ The `wso2/bigquery2` module contains operations that retrieve projects, tables, 
 
 |                             |       Version               |
 |:---------------------------:|:---------------------------:|
-| Ballerina Language          | 0.990.3                     |
+| Ballerina Language          | 0.990.2                     |
 | Bigquery API Version        | V2                          |
 
 ## Sample
@@ -22,7 +22,14 @@ Import the `wso2/bigquery2` module into the Ballerina project.
 ```ballerina
 import wso2/bigquery2;
 ```
-Instantiate the connector by giving the authentication details in the HTTP client config. The HTTP client config has built-in support for BasicAuth and OAuth 2.0. Bigquery uses OAuth 2.0 to authenticate and authorize requests. The Bigquery connector can be minimally instantiated in the HTTP client config using the access token or the client ID, client secret, and refresh token.
+
+Instantiate the connector by giving authentication details in the HTTP client config. The HTTP client config has built-in support for BasicAuth and OAuth 2.0. Bigquery uses OAuth 2.0 to authenticate and authorize requests. The Bigquery connector can be minimally instantiated in the HTTP client config using the access token or the client ID, client secret, and refresh token.
+
+Azure Cosmos DB connector can be instantiated using the account base URL and master key of your account in the CosmosDB configuration.
+You can obtain the master key using following steps:
+
+1. Sign in to the [Azure portal](https://portal.azure.com/), click **Create a resource**, select **Databases** and **Azure Cosmos DB** and enter the basic settings for the new Azure Cosmos DB account.
+2. Select the created database, and click **keys**, and get the master key (use secondary key if you are not the owner of the Azure account).
 
 ###Obtaining Tokens to Run the Sample
 
@@ -51,17 +58,21 @@ bigquery2:BigqueryConfiguration bigqueryConfig = {
 
 bigquery2:Client bigqueryClient = new(bigqueryConfig);
 ```
+
+
 The `listProjects` function lists all projects to which current user have been granted any project role.
 ```ballerina
-// List projects.
-var response = bigqueryClient->listProjects();
+//List projects.
+var projects = bigqueryClient->listProjects();
 ```
+
 The response from `listProjects` is a `ProjectList` object if the request was successful or a `error` on failure.
+
 ```ballerina
-    if (bigqueryRes is ProjectList) {
-        io:print(bigqueryRes);
-    } else {
-        // Error will be printed
-        test:assertFail(msg = <string>bigqueryRes.detail().message);
+    if (projects is bigquery2:ProjectList) {
+            io:print("Projects: ", projects);
+        } else {
+            io:println("Error: ", response);
+        }
     }
 ```

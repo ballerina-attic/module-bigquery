@@ -14,6 +14,8 @@
 // specific language governing permissions and limitations
 // under the License.
 
+import ballerina/file;
+
 function convertToProjectsList(json jsonProjectList) returns ProjectList {
     ProjectList projectList = {};
     projectList.nextPageToken = jsonProjectList.nextPageToken != null ? jsonProjectList.nextPageToken.toString() : "";

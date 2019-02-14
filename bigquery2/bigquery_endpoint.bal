@@ -20,7 +20,7 @@ import ballerina/http;
 # + bigqueryClient - Bigquery Connector client
 public type Client client object {
 
-    private http:Client bigqueryClient;
+    public http:Client bigqueryClient;
 
     public function __init(BigqueryConfiguration bigqueryConfig) {
         self.init(bigqueryConfig);
@@ -110,10 +110,10 @@ public type Client client object {
                                returns @tainted QueryResults|error;
 };
 
-public remote function Client.listProjects(string nextPageToken = "") returns ProjectList|error {
+remote function Client.listProjects(string nextPageToken = "") returns ProjectList|error {
     string listProjectsPath = PROJECTS_PATH;
     if (nextPageToken != "") {
-        listProjectsPath = string `{{listProjectsPath}}?pageToken={{nextPageToken}}`;
+        listProjectsPath = listProjectsPath + QUESTION_MARK + PAGE_TOKEN_PATH + nextPageToken;
     }
     var httpResponse = self.bigqueryClient->get(listProjectsPath);
 
@@ -128,17 +128,18 @@ public remote function Client.listProjects(string nextPageToken = "") returns Pr
                 return setResponseError(jsonResponse);
             }
         } else {
-            error err = error(BIGQUERY_ERROR_CODE, { message: JSON_EXTRACTION_ERROR_MSG });
+            error err = error(BIGQUERY_ERROR_CODE,
+            { message: "Error occurred while accessing the JSON payload of the response" });
             return err;
         }
     } else {
-        error err = error(BIGQUERY_ERROR_CODE, { message: API_INVOCATION_ERROR_MSG });
+        error err = error(BIGQUERY_ERROR_CODE, { message: "Error occurred while invoking the REST API" });
         return err;
     }
 }
 
-public remote function Client.getDataset(string projectId, string datasetId) returns Dataset|error {
-    string getDatasetPath = string `{{PROJECTS_PATH}}/{{projectId}}/datasets/{{datasetId}}`;
+remote function Client.getDataset(string projectId, string datasetId) returns Dataset|error {
+    string getDatasetPath = PROJECTS_PATH + SLASH + projectId + DATASETS_PATH + SLASH + datasetId;
     var httpResponse = self.bigqueryClient->get(getDatasetPath);
 
     if (httpResponse is http:Response) {
@@ -152,18 +153,18 @@ public remote function Client.getDataset(string projectId, string datasetId) ret
                 return setResponseError(jsonResponse);
             }
         } else {
-            error err = error(BIGQUERY_ERROR_CODE, { message: JSON_EXTRACTION_ERROR_MSG });
+            error err = error(BIGQUERY_ERROR_CODE,
+            { message: "Error occurred while accessing the JSON payload of the response" });
             return err;
         }
     } else {
-        error err = error(BIGQUERY_ERROR_CODE, { message: API_INVOCATION_ERROR_MSG });
+        error err = error(BIGQUERY_ERROR_CODE, { message: "Error occurred while invoking the REST API" });
         return err;
     }
 }
 
-public remote function Client.listDatasets(string projectId, string nextPageToken = "") returns DatasetList|error {
-    string listDatasetPath = string `{{PROJECTS_PATH}}/{{projectId}}/datasets`;
-
+remote function Client.listDatasets(string projectId, string nextPageToken = "") returns DatasetList|error {
+    string listDatasetPath = PROJECTS_PATH + SLASH + projectId + DATASETS_PATH;
     if (nextPageToken != "") {
         listDatasetPath = listDatasetPath + QUESTION_MARK + PAGE_TOKEN_PATH +  nextPageToken;
     }
@@ -180,20 +181,21 @@ public remote function Client.listDatasets(string projectId, string nextPageToke
                 return setResponseError(jsonResponse);
             }
         } else {
-            error err = error(BIGQUERY_ERROR_CODE, { message: JSON_EXTRACTION_ERROR_MSG });
+            error err = error(BIGQUERY_ERROR_CODE,
+            { message: "Error occurred while accessing the JSON payload of the response" });
             return err;
         }
     } else {
-        error err = error(BIGQUERY_ERROR_CODE, { message: API_INVOCATION_ERROR_MSG });
+        error err = error(BIGQUERY_ERROR_CODE, { message: "Error occurred while invoking the REST API" });
         return err;
     }
 }
 
-public remote function Client.listTables(string projectId, string datasetId, string nextPageToken = "") returns TableList|error
+remote function Client.listTables(string projectId, string datasetId, string nextPageToken = "") returns TableList|error
 {
-    string listTablesPath = string `{{PROJECTS_PATH}}/{{projectId}}/datasets/{{datasetId}}/tables`;
+    string listTablesPath = PROJECTS_PATH + SLASH + projectId + DATASETS_PATH;
     if (nextPageToken != "") {
-        listTablesPath = string `{{listTablesPath}}?pageToken={{nextPageToken}}`;
+        listTablesPath = listTablesPath + QUESTION_MARK + PAGE_TOKEN_PATH +  nextPageToken;
     }
     var httpResponse = self.bigqueryClient->get(listTablesPath);
 
@@ -208,19 +210,21 @@ public remote function Client.listTables(string projectId, string datasetId, str
                 return setResponseError(jsonResponse);
             }
         } else {
-            error err = error(BIGQUERY_ERROR_CODE, { message: JSON_EXTRACTION_ERROR_MSG });
+            error err = error(BIGQUERY_ERROR_CODE,
+            { message: "Error occurred while accessing the JSON payload of the response" });
             return err;
         }
     } else {
-        error err = error(BIGQUERY_ERROR_CODE, { message: API_INVOCATION_ERROR_MSG });
+        error err = error(BIGQUERY_ERROR_CODE, { message: "Error occurred while invoking the REST API" });
         return err;
     }
 }
 
-public remote function Client.getTable(string projectId, string datasetId, string tableId, string... selectedFields) returns
+remote function Client.getTable(string projectId, string datasetId, string tableId, string... selectedFields) returns
                                                                                                               Table|
                                                                                                               error {
-    string getTablePath = string `{{PROJECTS_PATH}}/{{projectId}}/datasets/{{datasetId}}/tables/{{tableId}}`;
+    string getTablePath = PROJECTS_PATH + SLASH + projectId + DATASETS_PATH + SLASH + datasetId + TABLES_PATH
+        + SLASH + tableId;
     string uriParams = "";
     int index = 0;
     foreach string field in selectedFields {
@@ -232,7 +236,7 @@ public remote function Client.getTable(string projectId, string datasetId, strin
         index = index + 1;
     }
     if (uriParams != "") {
-        getTablePath = string `{{getTablePath}}?selectedFields={{uriParams}}`;
+        getTablePath = getTablePath + QUESTION_MARK + FIELDS_PATH +  uriParams;
     }
     var httpResponse = self.bigqueryClient->get(getTablePath);
     if (httpResponse is http:Response) {
@@ -246,18 +250,20 @@ public remote function Client.getTable(string projectId, string datasetId, strin
                 return setResponseError(jsonResponse);
             }
         } else {
-            error err = error(BIGQUERY_ERROR_CODE, { message: JSON_EXTRACTION_ERROR_MSG });
+            error err = error(BIGQUERY_ERROR_CODE,
+            { message: "Error occurred while accessing the JSON payload of the response" });
             return err;
         }
     } else {
-        error err = error(BIGQUERY_ERROR_CODE, { message: API_INVOCATION_ERROR_MSG });
+        error err = error(BIGQUERY_ERROR_CODE, { message: "Error occurred while invoking the REST API" });
         return err;
     }
 }
 
-public remote function Client.listTableData(string projectId, string datasetId, string tableId, string nextPageToken = "",
+remote function Client.listTableData(string projectId, string datasetId, string tableId, string nextPageToken = "",
                                      string... selectedFields) returns @tainted TableData|error {
-    string listTableDataPath = string `{{PROJECTS_PATH}}/{{projectId}}/datasets/{{datasetId}}/tables/{{tableId}}/data`;
+    string listTableDataPath = PROJECTS_PATH + SLASH + projectId + DATASETS_PATH + SLASH + datasetId + TABLES_PATH
+        + SLASH + tableId + DATA_PATH;
     string uriParams = "";
     if (nextPageToken != "") {
         uriParams = uriParams + AND_SIGN + PAGE_TOKEN_PATH +  nextPageToken;
@@ -292,19 +298,21 @@ public remote function Client.listTableData(string projectId, string datasetId, 
                 return setResponseError(jsonResponse);
             }
         } else {
-            error err = error(BIGQUERY_ERROR_CODE, { message: JSON_EXTRACTION_ERROR_MSG });
+            error err = error(BIGQUERY_ERROR_CODE,
+            { message: "Error occurred while accessing the JSON payload of the response" });
             return err;
         }
     } else {
-        error err = error(BIGQUERY_ERROR_CODE, { message: API_INVOCATION_ERROR_MSG });
+        error err = error(BIGQUERY_ERROR_CODE, { message: "Error occurred while invoking the REST API" });
         return err;
     }
 }
 
-public remote function Client.insertAllTableData(string projectId, string datasetId, string tableId, InsertRequestData[] rows)
+remote function Client.insertAllTableData(string projectId, string datasetId, string tableId, InsertRequestData[] rows)
                     returns error? {
     http:Request request = new;
-    string insertDataPath = string `{{PROJECTS_PATH}}/{{projectId}}/datasets/{{datasetId}}/tables/{{tableId}}/insertAll`;
+    string insertDataPath = PROJECTS_PATH + SLASH + projectId + DATASETS_PATH + SLASH + datasetId + TABLES_PATH + SLASH
+     + tableId + INSERT_PATH;
     json jsonPayload = { "kind": "bigquery#tableDataInsertAllRequest" };
     json[] jsonRows = [];
     int i = 0;
@@ -331,20 +339,21 @@ public remote function Client.insertAllTableData(string projectId, string datase
                 return setInsertResponseError(jsonResponse);
             }
         } else {
-            error err = error(BIGQUERY_ERROR_CODE, { message: JSON_EXTRACTION_ERROR_MSG });
+            error err = error(BIGQUERY_ERROR_CODE,
+            { message: "Error occurred while accessing the JSON payload of the response" });
             return err;
         }
     } else {
-        error err = error(BIGQUERY_ERROR_CODE, { message: API_INVOCATION_ERROR_MSG });
+        error err = error(BIGQUERY_ERROR_CODE, { message: "Error occurred while invoking the REST API" });
         return err;
     }
 }
 
-public remote function Client.runQuery(string projectId, @sensitive string queryString, json queryParameters = (),
+remote function Client.runQuery(string projectId, @sensitive string queryString, json queryParameters = (),
                                 ParameterMode parameterMode = "POSITIONAL")
                     returns @tainted QueryResults|error {
     http:Request request = new;
-    string getQueryResultsPath = string `{{PROJECTS_PATH}}/{{projectId}}/queries`;
+    string getQueryResultsPath = PROJECTS_PATH + SLASH + projectId + QUERIES_PATH;
     json jsonPayload = { "kind": "bigquery#queryRequest", "query" : queryString };
     if (queryParameters != ()) {
         jsonPayload.queryParameters = queryParameters;
@@ -369,20 +378,21 @@ public remote function Client.runQuery(string projectId, @sensitive string query
                 return setResponseError(jsonResponse);
             }
         } else {
-            error err = error(BIGQUERY_ERROR_CODE, { message: JSON_EXTRACTION_ERROR_MSG });
+            error err = error(BIGQUERY_ERROR_CODE,
+            { message: "Error occurred while accessing the JSON payload of the response" });
             return err;
         }
     } else {
-        error err = error(BIGQUERY_ERROR_CODE, { message: API_INVOCATION_ERROR_MSG });
+        error err = error(BIGQUERY_ERROR_CODE, { message: "Error occurred while invoking the REST API" });
         return err;
     }
 }
 
-public remote function Client.getQueryResults(string projectId, string jobId, string nextPageToken = "")
+remote function Client.getQueryResults(string projectId, string jobId, string nextPageToken = "")
                            returns @tainted QueryResults|error {
-    string getQueryResultsPath = string `{{PROJECTS_PATH}}/{{projectId}}/queries/{{jobId}}`;
+    string getQueryResultsPath = PROJECTS_PATH + SLASH + projectId + QUERIES_PATH + SLASH + jobId;
     if (nextPageToken != "") {
-        getQueryResultsPath = string `{{getQueryResultsPath}}?pageToken={{nextPageToken}}`;
+        getQueryResultsPath = getQueryResultsPath + QUESTION_MARK + PAGE_TOKEN_PATH +  nextPageToken;
     }
     var httpResponse = self.bigqueryClient->get(getQueryResultsPath);
 
@@ -397,16 +407,17 @@ public remote function Client.getQueryResults(string projectId, string jobId, st
                 return setResponseError(jsonResponse);
             }
         } else {
-            error err = error(BIGQUERY_ERROR_CODE, { message: JSON_EXTRACTION_ERROR_MSG });
+            error err = error(BIGQUERY_ERROR_CODE,
+            { message: "Error occurred while accessing the JSON payload of the response" });
             return err;
         }
     } else {
-        error err = error(BIGQUERY_ERROR_CODE, { message: API_INVOCATION_ERROR_MSG });
+        error err = error(BIGQUERY_ERROR_CODE, { message: "Error occurred while invoking the REST API" });
         return err;
     }
 }
 
-public function Client.init(BigqueryConfiguration bigqueryConfig) {
+function Client.init(BigqueryConfiguration bigqueryConfig) {
     http:AuthConfig? authConfig = bigqueryConfig.clientConfig.auth;
     if (authConfig is http:AuthConfig) {
         authConfig.refreshUrl = REFRESH_URL;
