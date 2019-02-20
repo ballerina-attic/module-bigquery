@@ -38,5 +38,3 @@ function setInsertResponseError(json jsonResponse) returns error {
     error err = error(BIGQUERY_ERROR_CODE, { message: errorMessage });
     return err;
 }
-
-

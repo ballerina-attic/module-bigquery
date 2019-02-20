@@ -62,7 +62,7 @@ bigquery2:Client bigqueryClient = new(bigqueryConfig);
 
 The `listProjects` function lists all projects to which current user have been granted any project role.
 ```ballerina
-//List projects.
+// List projects.
 var projects = bigqueryClient->listProjects();
 ```
 
