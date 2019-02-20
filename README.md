@@ -14,7 +14,7 @@ The Bigquery connector allows you to access and run queries on Bigquery through 
 Download the Ballerina [distribution](https://ballerina.io/downloads/).
 
 ## Working with Bigquery Endpoint remote functions
-All the remote functions return valid responses or errors. If the remote function successfully completes, then the requested resource is returned. If not, an error is returned.
+All the remote functions return valid responses or errors. If the remote function successfully completes, then the requested resource is returned. If not, an 'error' is returned.
 
 Create a Bigquery Client endpoint to use the Bigquery Endpoint.
 ```ballerina
@@ -22,10 +22,10 @@ bigquery2:BigqueryConfiguration bigqueryConfig = {
     clientConfig: {
         auth: {
             scheme: http:OAUTH2,
-            accessToken:testAccessToken,
-            clientId:testClientId,
-            clientSecret:testClientSecret,
-            refreshToken:testRefreshToken
+            accessToken: testAccessToken,
+            clientId: testClientId,
+            clientSecret: testClientSecret,
+            refreshToken: testRefreshToken
         }
     }
 };
@@ -36,9 +36,10 @@ Then the endpoint remote function can be invoked using `var response = bigqueryC
 
 #### Sample
 ```ballerina
+import wso2/bigquery2;
+
 import ballerina/config;
 import ballerina/io;
-import wso2/bigquery2;
 
 public function main() {
 
@@ -58,7 +59,7 @@ public function main() {
     // Create the Bigquery client.
     bigquery2:Client bigqueryClient = new(bigqueryConfig);
 
-    // Invoke list projects function to list the projects.
+    // Invoke listProjects function to list the projects.
     var projects = bigqueryClient->listProjects();
     if (projects is bigquery2:ProjectList) {
         io:print("Projects: ", projects);

@@ -14,25 +14,25 @@
 // specific language governing permissions and limitations
 // under the License.
 
-//API urls
-final string BASE_URL = "https://www.googleapis.com";
-final string REFRESH_URL = "https://www.googleapis.com/oauth2/v3/token";
-final string PROJECTS_PATH = "/bigquery/v2/projects";
-final string DATASETS_PATH = "/datasets";
-final string TABLES_PATH = "/tables";
-final string DATA_PATH = "/data";
-final string QUERIES_PATH = "/queries";
-final string INSERT_PATH = "/insertAll";
+// API urls.
+const string BASE_URL = "https://www.googleapis.com";
+const string REFRESH_URL = "https://www.googleapis.com/oauth2/v3/token";
+const string PROJECTS_PATH = "/bigquery/v2/projects";
+const string DATASETS_PATH = "/datasets";
+const string TABLES_PATH = "/tables";
+const string DATA_PATH = "/data";
+const string QUERIES_PATH = "/queries";
+const string INSERT_PATH = "/insertAll";
 
-final string PAGE_TOKEN_PATH = "pageToken=";
-final string FIELDS_PATH = "selectedFields=";
-final string QUESTION_MARK = "?";
-final string AND_SIGN = "&";
-final string SLASH = "/";
+const string PAGE_TOKEN_PATH = "pageToken=";
+const string FIELDS_PATH = "selectedFields=";
+const string QUESTION_MARK = "?";
+const string AND_SIGN = "&";
+const string SLASH = "/";
 
 public const POSITIONAL_MODE = "POSITIONAL";
 public const NAMED_MODE = "NAMED";
 public type ParameterMode "POSITIONAL"|"NAMED";
 
-// Error Codes
+// Error Codes.
 final string BIGQUERY_ERROR_CODE = "(wso2/bigquery2)BigqueryError";

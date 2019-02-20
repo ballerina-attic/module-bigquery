@@ -64,11 +64,11 @@ function convertToDataset(json jsonDataset) returns Dataset {
     Dataset dataset = {};
     dataset.id = jsonDataset.id.toString();
     dataset.projectId = jsonDataset.datasetReference.projectId != null ?
-    jsonDataset.datasetReference.projectId.toString()                  : "";
+    jsonDataset.datasetReference.projectId.toString() : "";
     dataset.datasetId = jsonDataset.datasetReference.datasetId.toString();
     dataset.creationTime = jsonDataset.creationTime != null ? convertToInt(jsonDataset.creationTime.toString()) : 0;
     dataset.lastModifiedTime = jsonDataset.lastModifiedTime != null ?
-    convertToInt(jsonDataset.lastModifiedTime.toString())           : 0;
+    convertToInt(jsonDataset.lastModifiedTime.toString()) : 0;
     dataset.location = jsonDataset.location != null ? jsonDataset.location.toString() : "";
     return dataset;
 }
@@ -146,9 +146,9 @@ function convertToTable(json jsonTable) returns Table {
     tableRecord.^"type" = jsonTable["type"] != null ? jsonTable["type"].toString() : "";
     tableRecord.creationTime = jsonTable.creationTime != null ? convertToInt(jsonTable.creationTime.toString()) : 0;
     tableRecord.lastModifiedTime = jsonTable.lastModifiedTime != null ?
-                convertToInt(jsonTable.lastModifiedTime.toString())               : 0;
+                convertToInt(jsonTable.lastModifiedTime.toString()) : 0;
     tableRecord.expirationTime = jsonTable.expirationTime != null ?
-                convertToInt(jsonTable.expirationTime.toString())             : 0;
+                convertToInt(jsonTable.expirationTime.toString()) : 0;
     tableRecord.fields = jsonTable.schema != null && jsonTable.schema.fields != null ?
                 convertToFields(<json[]>jsonTable.schema.fields) : [];
     return tableRecord;

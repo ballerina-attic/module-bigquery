@@ -48,10 +48,10 @@ bigquery2:BigqueryConfiguration bigqueryConfig = {
     clientConfig: {
         auth: {
             scheme: http:OAUTH2,
-            accessToken:testAccessToken,
-            clientId:testClientId,
-            clientSecret:testClientSecret,
-            refreshToken:testRefreshToken
+            accessToken: testAccessToken,
+            clientId: testClientId,
+            clientSecret: testClientSecret,
+            refreshToken: testRefreshToken
         }
     }
 };
@@ -66,7 +66,7 @@ The `listProjects` function lists all projects to which current user have been g
 var projects = bigqueryClient->listProjects();
 ```
 
-The response from `listProjects` is a `ProjectList` object if the request was successful or a `error` on failure.
+The response from `listProjects` is a `ProjectList` object if the request was successful or an `error` on failure.
 
 ```ballerina
     if (projects is bigquery2:ProjectList) {
