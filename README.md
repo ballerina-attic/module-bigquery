@@ -8,7 +8,7 @@ The Bigquery connector allows you to access and run queries on Bigquery through 
 
 | Ballerina Language Version  | Bigquery API Version |
 |:---------------------------:|:--------------------:|
-|  0.990.2                    |   V4                 |
+|  0.990.3                    |   V2                 |
 
 ##### Prerequisites
 Download the Ballerina [distribution](https://ballerina.io/downloads/).
@@ -39,35 +39,38 @@ Then the endpoint remote function can be invoked using `var response = bigqueryC
 import wso2/bigquery2;
 
 import ballerina/config;
+import ballerina/http;
 import ballerina/io;
+
+// Create the Bigquery configuration.
+bigquery2:BigqueryConfiguration bigqueryConfig = {
+    clientConfig: {
+        auth: {
+            scheme: http:OAUTH2,
+            accessToken: config:getAsString("ACCESS_TOKEN"),
+            clientId: config:getAsString("CLIENT_ID"),
+            clientSecret: config:getAsString("CLIENT_SECRET"),
+            refreshToken: config:getAsString("REFRESH_TOKEN")
+        }
+    }
+};
+
+// Create the Bigquery client.
+bigquery2:Client bigqueryClient = new(bigqueryConfig);
 
 public function main() {
 
-    // Create the Bigquery configuration.
-    bigquery2:BigqueryConfiguration bigqueryConfig = {
-        clientConfig: {
-            auth: {
-                scheme: http:OAUTH2,
-                accessToken: config:getAsString("ACCESS_TOKEN"),
-                clientId: config:getAsString("CLIENT_ID"),
-                clientSecret: config:getAsString("CLIENT_SECRET"),
-                refreshToken: config:getAsString("REFRESH_TOKEN")
-            }
-        }
-    };
-
-    // Create the Bigquery client.
-    bigquery2:Client bigqueryClient = new(bigqueryConfig);
-
     // Invoke listProjects function to list the projects.
-    var projects = bigqueryClient->listProjects();
-    if (projects is bigquery2:ProjectList) {
-        io:print("Projects: ", projects);
+    var listProjectResponse = bigqueryClient->listProjects();
+    if (listProjectResponse is bigquery2:ProjectList) {
+        io:print("Projects: ", listProjectResponse);
     } else {
-        io:println("Error: ", response);
+        // Print the error.
+        io:println("Error: ", listProjectResponse);
     }
 }
 ```
+
 ##### Contributing to Ballerina Bigquery Endpoint
 Clone the repository by running the following command:
 `git clone https://github.com/wso2-ballerina/module-bigquery.git`
