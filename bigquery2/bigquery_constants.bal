@@ -43,7 +43,7 @@ public const NAMED_MODE = "NAMED";
 public type ParameterMode "POSITIONAL"|"NAMED";
 
 // Error Codes.
-final string BIGQUERY_ERROR_CODE = "(wso2/bigquery2)BigqueryError";
+const BIGQUERY_ERROR_CODE = "{wso2/bigquery2}BigQueryError";
 
 // Header parameters.
 const string ALG = "alg";
@@ -57,9 +57,3 @@ const string AUD = "aud";
 const string JTI = "jti";
 const string EXP = "exp";
 const string IAT = "iat";
-
-# Constant for the internal error code.
-public final string INTERNAL_ERROR_CODE = "{ballerina/internal}InternalError";
-
-# Constant for the auth error code.
-public final string AUTH_ERROR_CODE = "{ballerina/auth}AuthError";

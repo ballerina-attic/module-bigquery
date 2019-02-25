@@ -72,7 +72,7 @@ The response from `listProjects` is a `ProjectList` object if the request was su
     if (listProjectResponse is bigquery2:ProjectList) {
         io:print("Projects: ", listProjectResponse);
     } else {
-        // Error will be printed.
+        // Print the error.
         io:println("Error: ", listProjectResponse);
     }
 ```
@@ -104,15 +104,15 @@ bigquery2:Client bigqueryClient = new(bigqueryConfig);
 
 public function main() {
 
-    // Invoke listProjects function to list the projects.
-    var listProjectResponse = bigqueryClient->listProjects();
-    if (listProjectResponse is bigquery2:ProjectList) {
-        io:println("Projects: ", listProjectResponse);
+    // Invoke the listProjects remote function to list the projects.
+    var listProjectsResponse = bigqueryClient->listProjects();
+    if (listProjectsResponse is bigquery2:ProjectList) {
+        io:println("Projects: ", listProjectsResponse);
     } else {
-        io:println("Error: ", listProjectResponse);
+        io:println("Error: ", listProjectsResponse);
     }
 
-    //Get query result.
+    // Get query result.
     var queryResults = bigqueryClient->getQueryResults("bigqueryproject-1121", "job_YtVh7jROzMs_KkTwJE5ggmM7WuEi");
     if (queryResults is bigquery2:QueryResults) {
         io:println("Query Result: ", queryResults);

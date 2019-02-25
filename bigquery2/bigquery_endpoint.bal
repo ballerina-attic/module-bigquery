@@ -126,7 +126,7 @@ public type Client client object {
     # + keyStoreLocation - The location where the p12 key file is located.
     # + serviceAccount - The value of the service Account.
     # + scope - The scope to access the API.
-    # + return - string on success and error on failure
+    # + return - Accesstoken details as a json on success and error on failure
     public remote function getAccessTokenFromServiceAccount(string keyStoreLocation, string serviceAccount,
                                                             string scope) returns @tainted json|error;
 };
@@ -449,7 +449,7 @@ public remote function Client.getAccessTokenFromServiceAccount(string keyStoreLo
     payload.exp = exp;
     payload.iat = iat;
 
-    map<any> customClaims = {};
+    map<string> customClaims = {};
     customClaims[SCOPE] = scope;
     payload.customClaims = customClaims;
     payload.sub = serviceAccount;
@@ -476,12 +476,11 @@ public remote function Client.getAccessTokenFromServiceAccount(string keyStoreLo
                 return setResponseError(jsonResponse);
             }
         } else {
-            error err = error(BIGQUERY_ERROR_CODE,
-            { message: "Error occurred while accessing the JSON payload of the response" });
+            error err = error(BIGQUERY_ERROR_CODE, { message: jsonResponse.detail().message });
             return err;
         }
     } else {
-        error err = error(BIGQUERY_ERROR_CODE, { message: "Error occurred while invoking the REST API" });
+        error err = error(BIGQUERY_ERROR_CODE, { message: httpResponse.detail().message });
         return err;
     }
 }

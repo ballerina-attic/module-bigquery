@@ -25,8 +25,8 @@ import ballerina/crypto;
 # + config - JWTIssuerConfig object
 #
 # + return - JWT token string or an error if token validation fails
-public function issue(internal:JwtHeader header, internal:JwtPayload payload, internal:JWTIssuerConfig config)
-                                                                                       returns (string|error) {
+function issue(internal:JwtHeader header, internal:JwtPayload payload, internal:JWTIssuerConfig config)
+              returns string|error {
     string jwtHeader = check createHeader(header);
     string jwtPayload = check createPayload(payload);
     string jwtAssertion = jwtHeader + "." + jwtPayload;
@@ -45,7 +45,7 @@ public function issue(internal:JwtHeader header, internal:JwtPayload payload, in
     } else if (header.alg == "RS512") {
         signature = encodeBase64Url(check crypto:signRsaSha512(jwtAssertion.toByteArray("UTF-8"), privateKey));
     } else {
-        error jwtError = error(AUTH_ERROR_CODE, { message: "Unsupported JWS algorithm" });
+        error jwtError = error(BIGQUERY_ERROR_CODE, { message: "Unsupported JWS algorithm" });
         return jwtError;
     }
 
@@ -57,10 +57,10 @@ public function issue(internal:JwtHeader header, internal:JwtPayload payload, in
 # + header - JwtHeader object
 #
 # + return - Encoded JWT Header or an error if token validation fails
-function createHeader(internal:JwtHeader header) returns (string|error) {
+function createHeader(internal:JwtHeader header) returns string|error {
     json headerJson = {};
     if (!validateMandatoryJwtHeaderFields(header)) {
-        error jwtError = error(INTERNAL_ERROR_CODE, { message: "Mandatory field signing algorithm(alg) is empty." });
+        error jwtError = error(BIGQUERY_ERROR_CODE, { message: "Mandatory field signing algorithm(alg) is empty." });
         return jwtError;
     }
     headerJson[ALG] = header.alg;
@@ -79,10 +79,10 @@ function createHeader(internal:JwtHeader header) returns (string|error) {
 # + payload - JwtPayload object
 #
 # + return - Encoded JWT Payload or an error if token validation fails
-function createPayload(internal:JwtPayload payload) returns (string|error) {
+function createPayload(internal:JwtPayload payload) returns string|error {
     json payloadJson = {};
     if (!validateMandatoryFields(payload)) {
-        error jwtError = error(INTERNAL_ERROR_CODE,
+        error jwtError = error(BIGQUERY_ERROR_CODE,
         { message: "Mandatory fields(Issuer, Subject, Expiration time or Audience) are empty." });
         return jwtError;
     }

@@ -60,13 +60,13 @@ bigquery2:Client bigqueryClient = new(bigqueryConfig);
 
 public function main() {
 
-    // Invoke listProjects function to list the projects.
-    var listProjectResponse = bigqueryClient->listProjects();
-    if (listProjectResponse is bigquery2:ProjectList) {
-        io:print("Projects: ", listProjectResponse);
+    // Invoke the listProjects remote function to list the projects.
+    var listProjectsResponse = bigqueryClient->listProjects();
+    if (listProjectsResponse is bigquery2:ProjectList) {
+        io:print("Projects: ", listProjectsResponse);
     } else {
         // Print the error.
-        io:println("Error: ", listProjectResponse);
+        io:println("Error: ", listProjectsResponse);
     }
 }
 ```

@@ -14,10 +14,10 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerina/internal;
 import ballerina/encoding;
+import ballerina/internal;
 
-function addMapToJson(json inJson, map<any> mapToConvert) returns (json) {
+function addMapToJson(json inJson, map<any> mapToConvert) returns json {
     if (mapToConvert.length() != 0) {
         foreach var key in mapToConvert.keys() {
             var customClaims = mapToConvert[key];
@@ -37,7 +37,7 @@ function addMapToJson(json inJson, map<any> mapToConvert) returns (json) {
     return inJson;
 }
 
-function convertStringArrayToJson(string[] arrayToConvert) returns (json) {
+function convertStringArrayToJson(string[] arrayToConvert) returns json {
     json jsonPayload = [];
     int i = 0;
     while (i < arrayToConvert.length()) {
@@ -47,7 +47,7 @@ function convertStringArrayToJson(string[] arrayToConvert) returns (json) {
     return jsonPayload;
 }
 
-function convertIntArrayToJson(int[] arrayToConvert) returns (json) {
+function convertIntArrayToJson(int[] arrayToConvert) returns json {
     json jsonPayload = [];
     int i = 0;
     while (i < arrayToConvert.length()) {
@@ -57,14 +57,14 @@ function convertIntArrayToJson(int[] arrayToConvert) returns (json) {
     return jsonPayload;
 }
 
-function validateMandatoryFields(internal:JwtPayload jwtPayload) returns (boolean) {
+function validateMandatoryFields(internal:JwtPayload jwtPayload) returns boolean {
     if (jwtPayload.iss == "" || jwtPayload.sub == "" || jwtPayload.exp == 0 || jwtPayload.aud.length() == 0) {
         return false;
     }
     return true;
 }
 
-function validateMandatoryJwtHeaderFields(internal:JwtHeader jwtHeader) returns (boolean) {
+function validateMandatoryJwtHeaderFields(internal:JwtHeader jwtHeader) returns boolean {
     if (jwtHeader.alg == "") {
         return false;
     }
