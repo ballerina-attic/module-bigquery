@@ -12,7 +12,7 @@ The `wso2/bigquery2` module contains operations that retrieve projects, tables, 
 
 |                             |       Version               |
 |:---------------------------:|:---------------------------:|
-| Ballerina Language          | 0.990.2                     |
+| Ballerina Language          | 0.990.3                     |
 | Bigquery API Version        | V2                          |
 
 ## Sample
@@ -60,19 +60,64 @@ bigquery2:Client bigqueryClient = new(bigqueryConfig);
 ```
 
 
-The `listProjects` function lists all projects to which current user have been granted any project role.
+The `listProjects` remote function lists all projects to which current user have been granted any project role.
 ```ballerina
 // List projects.
-var projects = bigqueryClient->listProjects();
+var listProjectResponse = bigqueryClient->listProjects();
 ```
 
 The response from `listProjects` is a `ProjectList` object if the request was successful or an `error` on failure.
 
 ```ballerina
-    if (projects is bigquery2:ProjectList) {
-            io:print("Projects: ", projects);
-        } else {
-            io:println("Error: ", response);
+    if (listProjectResponse is bigquery2:ProjectList) {
+        io:print("Projects: ", listProjectResponse);
+    } else {
+        // Print the error.
+        io:println("Error: ", listProjectResponse);
+    }
+```
+
+
+#### Sample
+```ballerina
+import wso2/bigquery2;
+
+import ballerina/config;
+import ballerina/http;
+import ballerina/io;
+
+// Create the Bigquery configuration.
+bigquery2:BigqueryConfiguration bigqueryConfig = {
+    clientConfig: {
+        auth: {
+            scheme: http:OAUTH2,
+            accessToken: config:getAsString("ACCESS_TOKEN"),
+            clientId: config:getAsString("CLIENT_ID"),
+            clientSecret: config:getAsString("CLIENT_SECRET"),
+            refreshToken: config:getAsString("REFRESH_TOKEN")
         }
     }
+};
+
+// Create the Bigquery client.
+bigquery2:Client bigqueryClient = new(bigqueryConfig);
+
+public function main() {
+
+    // Invoke the listProjects remote function to list the projects.
+    var listProjectsResponse = bigqueryClient->listProjects();
+    if (listProjectsResponse is bigquery2:ProjectList) {
+        io:println("Projects: ", listProjectsResponse);
+    } else {
+        io:println("Error: ", listProjectsResponse);
+    }
+
+    // Get query result.
+    var queryResults = bigqueryClient->getQueryResults("bigqueryproject-1121", "job_YtVh7jROzMs_KkTwJE5ggmM7WuEi");
+    if (queryResults is bigquery2:QueryResults) {
+        io:println("Query Result: ", queryResults);
+    } else {
+        io:println("Error: ", queryResults);
+    }
+}
 ```

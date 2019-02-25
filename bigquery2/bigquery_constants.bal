@@ -30,9 +30,30 @@ const string QUESTION_MARK = "?";
 const string AND_SIGN = "&";
 const string SLASH = "/";
 
+const string TOKEN_ENDPOINT = "/oauth2/v4/token";
+const string JWT_HEADER_ALGO_VALUE = "RS256";
+const string JWT_HEADER_TYPE_VALUE = "JWT";
+const string GRANT_TYPE_HEADER = "urn:ietf:params:oauth:grant-type:jwt-bearer";
+const string SCOPE = "scope";
+const string PASSWORD = "notasecret";
+const string KEYALIAS = "privatekey";
+
 public const POSITIONAL_MODE = "POSITIONAL";
 public const NAMED_MODE = "NAMED";
 public type ParameterMode "POSITIONAL"|"NAMED";
 
 // Error Codes.
-final string BIGQUERY_ERROR_CODE = "(wso2/bigquery2)BigqueryError";
+const BIGQUERY_ERROR_CODE = "{wso2/bigquery2}BigQueryError";
+
+// Header parameters.
+const string ALG = "alg";
+const string TYP = "typ";
+const string JWT = "JWT";
+
+// Payload parameters.
+const string ISS = "iss";
+const string SUB = "sub";
+const string AUD = "aud";
+const string JTI = "jti";
+const string EXP = "exp";
+const string IAT = "iat";

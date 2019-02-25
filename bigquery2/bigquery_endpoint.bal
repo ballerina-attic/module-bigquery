@@ -15,6 +15,8 @@
 // under the License.
 
 import ballerina/http;
+import ballerina/internal;
+import ballerina/time;
 
 # Bigquery Endpoint object.
 #
@@ -118,12 +120,21 @@ public type Client client object {
     # + return - QueryResults object on success and error on failure
     public remote function getQueryResults(string projectId, string jobId, string nextPageToken = "")
                                returns @tainted QueryResults|error;
+
+    #  Get an access token from the service account.
+    #
+    # + keyStoreLocation - The location where the p12 key file is located.
+    # + serviceAccount - The value of the service Account.
+    # + scope - The scope to access the API.
+    # + return - Accesstoken details as a json on success and error on failure
+    public remote function getAccessTokenFromServiceAccount(string keyStoreLocation, string serviceAccount,
+                                                            string scope) returns @tainted json|error;
 };
 
-remote function Client.listProjects(string nextPageToken = "") returns ProjectList|error {
+public remote function Client.listProjects(string nextPageToken = "") returns ProjectList|error {
     string listProjectsPath = PROJECTS_PATH;
     if (nextPageToken != "") {
-        listProjectsPath = listProjectsPath + QUESTION_MARK + PAGE_TOKEN_PATH + nextPageToken;
+        listProjectsPath = string `{{listProjectsPath}}?pageToken={{nextPageToken}}`;
     }
     var httpResponse = self.bigqueryClient->get(listProjectsPath);
 
@@ -148,8 +159,8 @@ remote function Client.listProjects(string nextPageToken = "") returns ProjectLi
     }
 }
 
-remote function Client.getDataset(string projectId, string datasetId) returns Dataset|error {
-    string getDatasetPath = PROJECTS_PATH + SLASH + projectId + DATASETS_PATH + SLASH + datasetId;
+public remote function Client.getDataset(string projectId, string datasetId) returns Dataset|error {
+    string getDatasetPath = string `{{PROJECTS_PATH}}/{{projectId}}/datasets/{{datasetId}}`;
     var httpResponse = self.bigqueryClient->get(getDatasetPath);
 
     if (httpResponse is http:Response) {
@@ -173,8 +184,8 @@ remote function Client.getDataset(string projectId, string datasetId) returns Da
     }
 }
 
-remote function Client.listDatasets(string projectId, string nextPageToken = "") returns DatasetList|error {
-    string listDatasetPath = PROJECTS_PATH + SLASH + projectId + DATASETS_PATH;
+public remote function Client.listDatasets(string projectId, string nextPageToken = "") returns DatasetList|error {
+    string listDatasetPath = string `{{PROJECTS_PATH}}/{{projectId}}/datasets`;
     if (nextPageToken != "") {
         listDatasetPath = listDatasetPath + QUESTION_MARK + PAGE_TOKEN_PATH +  nextPageToken;
     }
@@ -201,11 +212,11 @@ remote function Client.listDatasets(string projectId, string nextPageToken = "")
     }
 }
 
-remote function Client.listTables(string projectId, string datasetId, string nextPageToken = "")
+public remote function Client.listTables(string projectId, string datasetId, string nextPageToken = "")
                            returns TableList|error {
-    string listTablesPath = PROJECTS_PATH + SLASH + projectId + DATASETS_PATH;
+    string listTablesPath = string `{{PROJECTS_PATH}}/{{projectId}}/datasets/{{datasetId}}/tables`;
     if (nextPageToken != "") {
-        listTablesPath = listTablesPath + QUESTION_MARK + PAGE_TOKEN_PATH +  nextPageToken;
+        listTablesPath = string `{{listTablesPath}}?pageToken={{nextPageToken}}`;
     }
     var httpResponse = self.bigqueryClient->get(listTablesPath);
 
@@ -230,10 +241,9 @@ remote function Client.listTables(string projectId, string datasetId, string nex
     }
 }
 
-remote function Client.getTable(string projectId, string datasetId, string tableId, string... selectedFields)
-                           returns Table| error {
-    string getTablePath = PROJECTS_PATH + SLASH + projectId + DATASETS_PATH + SLASH + datasetId + TABLES_PATH
-        + SLASH + tableId;
+public remote function Client.getTable(string projectId, string datasetId, string tableId, string... selectedFields)
+                           returns Table|error {
+    string getTablePath = string `{{PROJECTS_PATH}}/{{projectId}}/datasets/{{datasetId}}/tables/{{tableId}}`;
     string uriParams = "";
     int index = 0;
     foreach string field in selectedFields {
@@ -245,7 +255,7 @@ remote function Client.getTable(string projectId, string datasetId, string table
         index = index + 1;
     }
     if (uriParams != "") {
-        getTablePath = getTablePath + QUESTION_MARK + FIELDS_PATH +  uriParams;
+        getTablePath = string `{{getTablePath}}?selectedFields={{uriParams}}`;
     }
     var httpResponse = self.bigqueryClient->get(getTablePath);
     if (httpResponse is http:Response) {
@@ -269,10 +279,10 @@ remote function Client.getTable(string projectId, string datasetId, string table
     }
 }
 
-remote function Client.listTableData(string projectId, string datasetId, string tableId, string nextPageToken = "",
-                                     string... selectedFields) returns @tainted TableData|error {
-    string listTableDataPath = PROJECTS_PATH + SLASH + projectId + DATASETS_PATH + SLASH + datasetId + TABLES_PATH
-        + SLASH + tableId + DATA_PATH;
+public remote function Client.listTableData(string projectId, string datasetId, string tableId,
+                                            string nextPageToken = "", string... selectedFields)
+                                  returns @tainted TableData|error {
+    string listTableDataPath = string `{{PROJECTS_PATH}}/{{projectId}}/datasets/{{datasetId}}/tables/{{tableId}}/data`;
     string uriParams = "";
     if (nextPageToken != "") {
         uriParams = uriParams + AND_SIGN + PAGE_TOKEN_PATH +  nextPageToken;
@@ -317,11 +327,10 @@ remote function Client.listTableData(string projectId, string datasetId, string 
     }
 }
 
-remote function Client.insertAllTableData(string projectId, string datasetId, string tableId, InsertRequestData[] rows)
-                    returns error? {
+public remote function Client.insertAllTableData(string projectId, string datasetId, string tableId,
+                                                 InsertRequestData[] rows) returns error? {
     http:Request request = new;
-    string insertDataPath = PROJECTS_PATH + SLASH + projectId + DATASETS_PATH + SLASH + datasetId + TABLES_PATH + SLASH
-     + tableId + INSERT_PATH;
+    string insertDataPath = string `{{PROJECTS_PATH}}/{{projectId}}/datasets/{{datasetId}}/tables/{{tableId}}/insertAll`;
     json jsonPayload = { "kind": "bigquery#tableDataInsertAllRequest" };
     json[] jsonRows = [];
     int i = 0;
@@ -358,10 +367,10 @@ remote function Client.insertAllTableData(string projectId, string datasetId, st
     }
 }
 
-remote function Client.runQuery(string projectId, @sensitive string queryString, json queryParameters = (),
+public remote function Client.runQuery(string projectId, @sensitive string queryString, json queryParameters = (),
                                 ParameterMode parameterMode = "POSITIONAL") returns @tainted QueryResults|error {
     http:Request request = new;
-    string getQueryResultsPath = PROJECTS_PATH + SLASH + projectId + QUERIES_PATH;
+    string getQueryResultsPath = string `{{PROJECTS_PATH}}/{{projectId}}/queries`;
     json jsonPayload = { "kind": "bigquery#queryRequest", "query" : queryString };
     if (queryParameters != ()) {
         jsonPayload.queryParameters = queryParameters;
@@ -396,11 +405,11 @@ remote function Client.runQuery(string projectId, @sensitive string queryString,
     }
 }
 
-remote function Client.getQueryResults(string projectId, string jobId, string nextPageToken = "")
+public remote function Client.getQueryResults(string projectId, string jobId, string nextPageToken = "")
                            returns @tainted QueryResults|error {
-    string getQueryResultsPath = PROJECTS_PATH + SLASH + projectId + QUERIES_PATH + SLASH + jobId;
+    string getQueryResultsPath = string `{{PROJECTS_PATH}}/{{projectId}}/queries/{{jobId}}`;
     if (nextPageToken != "") {
-        getQueryResultsPath = getQueryResultsPath + QUESTION_MARK + PAGE_TOKEN_PATH +  nextPageToken;
+        getQueryResultsPath = string `{{getQueryResultsPath}}?pageToken={{nextPageToken}}`;
     }
     var httpResponse = self.bigqueryClient->get(getQueryResultsPath);
 
@@ -425,7 +434,58 @@ remote function Client.getQueryResults(string projectId, string jobId, string ne
     }
 }
 
-function Client.init(BigqueryConfiguration bigqueryConfig) {
+public remote function Client.getAccessTokenFromServiceAccount(string keyStoreLocation, string serviceAccount,
+                                                               string scope) returns @tainted json|error {
+    internal:JwtHeader header = {};
+    header.alg = JWT_HEADER_ALGO_VALUE;
+    header.typ = JWT_HEADER_TYPE_VALUE;
+
+    internal:JwtPayload payload = {};
+    payload.iss = serviceAccount;
+    payload.aud = [BASE_URL + TOKEN_ENDPOINT];
+
+    int iat = (time:currentTime().time / 1000) - 60;
+    int exp = iat + 3600;
+    payload.exp = exp;
+    payload.iat = iat;
+
+    map<string> customClaims = {};
+    customClaims[SCOPE] = scope;
+    payload.customClaims = customClaims;
+    payload.sub = serviceAccount;
+
+    internal:JWTIssuerConfig config = {};
+    config.keyAlias = KEYALIAS;
+    config.keyPassword = PASSWORD;
+    config.keyStoreFilePath = keyStoreLocation;
+    config.keyStorePassword = PASSWORD;
+
+    string jwtToken = check issue(header, payload, config);
+    json requestPayload = { "grant_type": GRANT_TYPE_HEADER, "assertion": jwtToken };
+    http:Request request = new;
+    request.setJsonPayload(requestPayload);
+    var httpResponse = self.bigqueryClient->post(TOKEN_ENDPOINT, request);
+
+    if (httpResponse is http:Response) {
+        int statusCode = httpResponse.statusCode;
+        var jsonResponse = httpResponse.getJsonPayload();
+        if (jsonResponse is json) {
+            if (statusCode == http:OK_200) {
+                return jsonResponse;
+            } else {
+                return setResponseError(jsonResponse);
+            }
+        } else {
+            error err = error(BIGQUERY_ERROR_CODE, { message: jsonResponse.detail().message });
+            return err;
+        }
+    } else {
+        error err = error(BIGQUERY_ERROR_CODE, { message: httpResponse.detail().message });
+        return err;
+    }
+}
+
+public function Client.init(BigqueryConfiguration bigqueryConfig) {
     http:AuthConfig? authConfig = bigqueryConfig.clientConfig.auth;
     if (authConfig is http:AuthConfig) {
         authConfig.refreshUrl = REFRESH_URL;
