@@ -118,6 +118,42 @@ function convertToTableData(json jsonTableData) returns TableData {
     return tableData;
 }
 
+function convertToInsertTableData(json jsonTableData) returns InsertTableData {
+    InsertTableData tableData = {};
+    tableData.kind = jsonTableData.kind != null ? jsonTableData.kind.toString() : "";
+    tableData.insertErrors = jsonTableData.insertErrors != null ? convertToInsertError(<json[]>jsonTableData.
+        insertErrors) : [];
+    return tableData;
+}
+
+function convertToInsertError(json[] jsonInsertErrors) returns InsertError[] {
+    int i = 0;
+    InsertError[] insertErrors = [];
+    InsertError insertError = {};
+    foreach json jsonInsertError in jsonInsertErrors {
+        insertError.index = jsonInsertError.index != null ? convertToInt(jsonInsertError.index) : 0;
+        insertError.errors = jsonInsertError.errors != null ? convertToErrors(<json[]>jsonInsertError.errors) : [];
+        insertErrors[i] = insertError;
+        i = i + 1;
+    }
+    return insertErrors;
+}
+
+function convertToErrors(json[] jsonErrors) returns Error[] {
+    int i = 0;
+    Error[] errors = [];
+    Error errorObj = {};
+    foreach json jsonError in jsonErrors {
+        errorObj.reason = jsonError.reason != null ? jsonError.reason.toString() : "";
+        errorObj.location = jsonError.location != null ? jsonError.location.toString() : "";
+        errorObj.debugInfo = jsonError.debugInfo != null ? jsonError.debugInfo.toString() : "";
+        errorObj.message = jsonError.message != null ? jsonError.message.toString() : "";
+        errors[i] = errorObj;
+        i = i + 1;
+    }
+    return errors;
+}
+
 function convertToTableList(json jsonTableList) returns TableList {
     TableList tableList = {};
     tableList.nextPageToken = jsonTableList.nextPageToken != null ? jsonTableList.nextPageToken.toString() : "";

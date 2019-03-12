@@ -87,3 +87,20 @@ public type Table record {
     int lastModifiedTime?;
     Field[] fields?;
 };
+
+public type InsertTableData record {
+    string kind = "";
+    InsertError[] insertErrors = [];
+};
+
+public type InsertError record {
+    int index = 0;
+    Error[] errors = [];
+};
+
+public type Error record {
+    string reason = "";
+    string location = "";
+    string debugInfo = "";
+    string message = "";
+};
