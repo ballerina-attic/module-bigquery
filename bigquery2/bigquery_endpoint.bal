@@ -328,7 +328,7 @@ public remote function Client.listTableData(string projectId, string datasetId, 
 }
 
 public remote function Client.insertAllTableData(string projectId, string datasetId, string tableId,
-                                                 InsertRequestData[] rows) returns error? {
+                                                 InsertRequestData[] rows) returns InsertTableData|error {
     http:Request request = new;
     string insertDataPath = string `{{PROJECTS_PATH}}/{{projectId}}/datasets/{{datasetId}}/tables/{{tableId}}/insertAll`;
     json jsonPayload = { "kind": "bigquery#tableDataInsertAllRequest" };
@@ -352,7 +352,7 @@ public remote function Client.insertAllTableData(string projectId, string datase
         var jsonResponse = httpResponse.getJsonPayload();
         if (jsonResponse is json) {
             if (statusCode == http:OK_200) {
-                return ();
+                return convertToInsertTableData(jsonResponse);
             } else {
                 return setInsertResponseError(jsonResponse);
             }

@@ -25,13 +25,8 @@ import wso2/bigquery2;
 
 Instantiate the connector by giving authentication details in the HTTP client config. The HTTP client config has built-in support for BasicAuth and OAuth 2.0. Bigquery uses OAuth 2.0 to authenticate and authorize requests. The Bigquery connector can be minimally instantiated in the HTTP client config using the access token or the client ID, client secret, and refresh token.
 
-Azure Cosmos DB connector can be instantiated using the account base URL and master key of your account in the CosmosDB configuration.
-You can obtain the master key using following steps:
 
-1. Sign in to the [Azure portal](https://portal.azure.com/), click **Create a resource**, select **Databases** and **Azure Cosmos DB** and enter the basic settings for the new Azure Cosmos DB account.
-2. Select the created database, and click **keys**, and get the master key (use secondary key if you are not the owner of the Azure account).
-
-###Obtaining Tokens to Run the Sample
+### Obtaining Tokens to Run the Sample
 
 1. Visit Google API Console, click Create Project, and follow the wizard to create a new project.
 2. Go to Credentials -> OAuth consent screen, enter a product name to be shown to users, and click Save.

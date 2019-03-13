@@ -117,6 +117,9 @@ function testInsertAllTableData() {
     if (bigqueryRes is error) {
         io:println("Error: ",  bigqueryRes);
         test:assertFail(msg = <string>bigqueryRes.detail().message);
+    } else {
+        io:println("Insert TableData Response: ",  bigqueryRes);
+        test:assertNotEquals(bigqueryRes, null, msg = "Failed to insert table data");
     }
 }
 
