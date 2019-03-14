@@ -98,7 +98,7 @@ public type Client client object {
     #
     # + return - nill on success and error on failure
     public remote function insertAllTableData(string projectId, string datasetId, string tableId,
-                                              InsertRequestData[] rows) returns error? ;
+                                              InsertRequestData[] rows) returns InsertTableData|error ;
 
     #  Runs a BigQuery SQL query and returns results if the query completes within a specified timeout.
     #
