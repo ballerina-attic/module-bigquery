@@ -48,7 +48,7 @@ public type Field record {
 #
 # + nextPageToken - A token used for paging results.
 # + totalRows - The total number of rows in the complete query result set.
-# + rows - An object with as many results as can be contained within the maximum permitted reply size.
+# + rows - Rows of results.
 public type TableData record {
     string nextPageToken?;
     int totalRows = 0;
