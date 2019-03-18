@@ -220,5 +220,6 @@ function convertToQueryResults(json jsonQueryResults) returns QueryResults {
     queryResults.jobComplete = jsonQueryResults.jobComplete != null ?
                 boolean.convert(jsonQueryResults.jobComplete.toString()) : false;
     queryResults.tableData = convertToTableData(jsonQueryResults);
+    queryResults.errors = jsonQueryResults.errors != null ? convertToErrors(<json[]>jsonQueryResults.errors) : [];
     return queryResults;
 }

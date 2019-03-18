@@ -29,6 +29,7 @@ public type QueryResults record {
     string location?;
     boolean jobComplete?;
     TableData tableData?;
+    Error[] errors = [];
 };
 
 # Define the Field.
