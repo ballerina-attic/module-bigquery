@@ -22,10 +22,13 @@ BigqueryConfiguration bigqueryConfig = {
     clientConfig: {
         auth: {
             scheme: http:OAUTH2,
-            accessToken: config:getAsString("ACCESS_TOKEN"),
-            clientId: config:getAsString("CLIENT_ID"),
-            clientSecret: config:getAsString("CLIENT_SECRET"),
-            refreshToken: config:getAsString("REFRESH_TOKEN")
+            config: {
+                accessToken: config:getAsString("ACCESS_TOKEN"),
+                clientId: config:getAsString("CLIENT_ID"),
+                clientSecret: config:getAsString("CLIENT_SECRET"),
+                refreshToken: config:getAsString("REFRESH_TOKEN"),
+                refreshUrl: REFRESH_URL
+            }
         }
     }
 };
@@ -43,7 +46,7 @@ function testListProjects() {
     var bigqueryRes = bigqueryClient->listProjects();
     if (bigqueryRes is ProjectList) {
         io:println("Projects Details: ", bigqueryRes);
-        test:assertNotEquals(bigqueryRes, null, msg = "Failed to list projects");
+        test:assertNotEquals(bigqueryRes, (), msg = "Failed to list projects");
     } else {
         test:assertFail(msg = <string>bigqueryRes.detail().message);
     }
@@ -55,7 +58,7 @@ function testGetDataset() {
     var bigqueryRes = bigqueryClient->getDataset(projectId, datasetId);
     if (bigqueryRes is Dataset) {
         io:println("Dataset Details: ", bigqueryRes);
-        test:assertNotEquals(bigqueryRes.id, null, msg = "Failed to get the dataset");
+        test:assertNotEquals(bigqueryRes.id, (), msg = "Failed to get the dataset");
     } else {
         test:assertFail(msg = <string>bigqueryRes.detail().message);
     }
@@ -67,7 +70,7 @@ function testListDatasets() {
     var bigqueryRes = bigqueryClient->listDatasets(projectId);
     if (bigqueryRes is DatasetList) {
         io:println("Datasets Details: ", bigqueryRes);
-        test:assertNotEquals(bigqueryRes, null, msg = "Failed to list projects");
+        test:assertNotEquals(bigqueryRes, (), msg = "Failed to list projects");
     } else {
         test:assertFail(msg = <string>bigqueryRes.detail().message);
     }
@@ -79,7 +82,7 @@ function testListTables() {
     var bigqueryRes = bigqueryClient->listTables(projectId, datasetId);
     if (bigqueryRes is TableList) {
         io:println("Tables Details: ", bigqueryRes);
-        test:assertNotEquals(bigqueryRes, null, msg = "Failed to list projects");
+        test:assertNotEquals(bigqueryRes, (), msg = "Failed to list projects");
     } else {
         test:assertFail(msg = <string>bigqueryRes.detail().message);
     }
@@ -91,7 +94,7 @@ function testListTableData() {
     var bigqueryRes = bigqueryClient->listTableData(projectId, datasetId, tableId);
     if (bigqueryRes is TableData) {
         io:println("Table data Details: ", bigqueryRes);
-        test:assertNotEquals(bigqueryRes, null, msg = "Failed to list projects");
+        test:assertNotEquals(bigqueryRes, (), msg = "Failed to list projects");
     } else {
         test:assertFail(msg = <string>bigqueryRes.detail().message);
     }
@@ -103,7 +106,7 @@ function testGetTable() {
     var bigqueryRes = bigqueryClient->getTable(projectId, datasetId, tableId, "word", "word_count");
     if (bigqueryRes is Table) {
         io:println("Table Details: ", bigqueryRes);
-        test:assertNotEquals(bigqueryRes.id, null, msg = "Failed to get table");
+        test:assertNotEquals(bigqueryRes.id, (), msg = "Failed to get table");
     } else {
         test:assertFail(msg = <string>bigqueryRes.detail().message);
     }
@@ -119,7 +122,7 @@ function testInsertAllTableData() {
         test:assertFail(msg = <string>bigqueryRes.detail().message);
     } else {
         io:println("Insert TableData Response: ",  bigqueryRes);
-        test:assertNotEquals(bigqueryRes, null, msg = "Failed to insert table data");
+        test:assertNotEquals(bigqueryRes, (), msg = "Failed to insert table data");
     }
 }
 
@@ -161,7 +164,7 @@ function testGetAccessTokenFromServiceAccount() {
     var bigqueryRes = bigqueryClient->getAccessTokenFromServiceAccount(keyStoreLocation, serviceAccount, scope);
     if (bigqueryRes is json) {
         io:println("Access token Details: ", bigqueryRes);
-        test:assertNotEquals(bigqueryRes, null, msg = "Failed to get access token from the service account.");
+        test:assertNotEquals(bigqueryRes, (), msg = "Failed to get access token from the service account.");
     } else {
         test:assertFail(msg = <string>bigqueryRes.detail().message);
     }

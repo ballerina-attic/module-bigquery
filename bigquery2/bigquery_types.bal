@@ -22,6 +22,7 @@
 # + location - The geographic location of the job.
 # + jobComplete - Whether the query has completed or not.
 # + tableData - Describes the data in a table.
+# + errors - A collection of error object.
 public type QueryResults record {
     Field[] fields = [];
     string projectId = "";

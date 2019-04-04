@@ -14,8 +14,9 @@
 // specific language governing permissions and limitations
 // under the License.
 
+import ballerina/auth;
+import ballerina/crypto;
 import ballerina/http;
-import ballerina/internal;
 import ballerina/time;
 
 # Bigquery Endpoint object.
@@ -134,7 +135,7 @@ public type Client client object {
 public remote function Client.listProjects(string nextPageToken = "") returns ProjectList|error {
     string listProjectsPath = PROJECTS_PATH;
     if (nextPageToken != "") {
-        listProjectsPath = string `{{listProjectsPath}}?pageToken={{nextPageToken}}`;
+        listProjectsPath = listProjectsPath + "?pageToken=" + nextPageToken;
     }
     var httpResponse = self.bigqueryClient->get(listProjectsPath);
 
@@ -160,7 +161,7 @@ public remote function Client.listProjects(string nextPageToken = "") returns Pr
 }
 
 public remote function Client.getDataset(string projectId, string datasetId) returns Dataset|error {
-    string getDatasetPath = string `{{PROJECTS_PATH}}/{{projectId}}/datasets/{{datasetId}}`;
+    string getDatasetPath = PROJECTS_PATH + "/" + projectId + "/datasets/" + datasetId;
     var httpResponse = self.bigqueryClient->get(getDatasetPath);
 
     if (httpResponse is http:Response) {
@@ -185,7 +186,7 @@ public remote function Client.getDataset(string projectId, string datasetId) ret
 }
 
 public remote function Client.listDatasets(string projectId, string nextPageToken = "") returns DatasetList|error {
-    string listDatasetPath = string `{{PROJECTS_PATH}}/{{projectId}}/datasets`;
+    string listDatasetPath = PROJECTS_PATH + "/" + projectId + "/datasets";
     if (nextPageToken != "") {
         listDatasetPath = listDatasetPath + QUESTION_MARK + PAGE_TOKEN_PATH +  nextPageToken;
     }
@@ -214,9 +215,9 @@ public remote function Client.listDatasets(string projectId, string nextPageToke
 
 public remote function Client.listTables(string projectId, string datasetId, string nextPageToken = "")
                            returns TableList|error {
-    string listTablesPath = string `{{PROJECTS_PATH}}/{{projectId}}/datasets/{{datasetId}}/tables`;
+    string listTablesPath = PROJECTS_PATH + "/" + projectId + "/datasets/" + datasetId + "/tables";
     if (nextPageToken != "") {
-        listTablesPath = string `{{listTablesPath}}?pageToken={{nextPageToken}}`;
+        listTablesPath = listTablesPath + "?pageToken=" + nextPageToken;
     }
     var httpResponse = self.bigqueryClient->get(listTablesPath);
 
@@ -243,7 +244,7 @@ public remote function Client.listTables(string projectId, string datasetId, str
 
 public remote function Client.getTable(string projectId, string datasetId, string tableId, string... selectedFields)
                            returns Table|error {
-    string getTablePath = string `{{PROJECTS_PATH}}/{{projectId}}/datasets/{{datasetId}}/tables/{{tableId}}`;
+    string getTablePath = PROJECTS_PATH + "/" + projectId + "/datasets/" + datasetId + "/tables/" + tableId;
     string uriParams = "";
     int index = 0;
     foreach string field in selectedFields {
@@ -255,7 +256,7 @@ public remote function Client.getTable(string projectId, string datasetId, strin
         index = index + 1;
     }
     if (uriParams != "") {
-        getTablePath = string `{{getTablePath}}?selectedFields={{uriParams}}`;
+        getTablePath = getTablePath + "?selectedFields=" + uriParams;
     }
     var httpResponse = self.bigqueryClient->get(getTablePath);
     if (httpResponse is http:Response) {
@@ -282,7 +283,7 @@ public remote function Client.getTable(string projectId, string datasetId, strin
 public remote function Client.listTableData(string projectId, string datasetId, string tableId,
                                             string nextPageToken = "", string... selectedFields)
                                   returns @tainted TableData|error {
-    string listTableDataPath = string `{{PROJECTS_PATH}}/{{projectId}}/datasets/{{datasetId}}/tables/{{tableId}}/data`;
+    string listTableDataPath = PROJECTS_PATH + "/" + projectId + "/datasets/" + datasetId + "/tables/" + tableId + "/data";
     string uriParams = "";
     if (nextPageToken != "") {
         uriParams = uriParams + AND_SIGN + PAGE_TOKEN_PATH +  nextPageToken;
@@ -330,7 +331,7 @@ public remote function Client.listTableData(string projectId, string datasetId, 
 public remote function Client.insertAllTableData(string projectId, string datasetId, string tableId,
                                                  InsertRequestData[] rows) returns InsertTableData|error {
     http:Request request = new;
-    string insertDataPath = string `{{PROJECTS_PATH}}/{{projectId}}/datasets/{{datasetId}}/tables/{{tableId}}/insertAll`;
+    string insertDataPath = PROJECTS_PATH + "/" + projectId + "/datasets/" + datasetId + "/tables/" + tableId + "/insertAll";
     json jsonPayload = { "kind": "bigquery#tableDataInsertAllRequest" };
     json[] jsonRows = [];
     int i = 0;
@@ -370,7 +371,7 @@ public remote function Client.insertAllTableData(string projectId, string datase
 public remote function Client.runQuery(string projectId, @sensitive string queryString, json queryParameters = (),
                                 ParameterMode parameterMode = "POSITIONAL") returns @tainted QueryResults|error {
     http:Request request = new;
-    string getQueryResultsPath = string `{{PROJECTS_PATH}}/{{projectId}}/queries`;
+    string getQueryResultsPath = PROJECTS_PATH + "/" + projectId + "/queries";
     json jsonPayload = { "kind": "bigquery#queryRequest", "query" : queryString };
     if (queryParameters != ()) {
         jsonPayload.queryParameters = queryParameters;
@@ -407,9 +408,9 @@ public remote function Client.runQuery(string projectId, @sensitive string query
 
 public remote function Client.getQueryResults(string projectId, string jobId, string nextPageToken = "")
                            returns @tainted QueryResults|error {
-    string getQueryResultsPath = string `{{PROJECTS_PATH}}/{{projectId}}/queries/{{jobId}}`;
+    string getQueryResultsPath = PROJECTS_PATH + "/" + projectId + "/queries/" + jobId;
     if (nextPageToken != "") {
-        getQueryResultsPath = string `{{getQueryResultsPath}}?pageToken={{nextPageToken}}`;
+        getQueryResultsPath = getQueryResultsPath + "?pageToken=" + nextPageToken;
     }
     var httpResponse = self.bigqueryClient->get(getQueryResultsPath);
 
@@ -436,11 +437,11 @@ public remote function Client.getQueryResults(string projectId, string jobId, st
 
 public remote function Client.getAccessTokenFromServiceAccount(string keyStoreLocation, string serviceAccount,
                                                                string scope) returns @tainted json|error {
-    internal:JwtHeader header = {};
+    auth:JwtHeader header = {};
     header.alg = JWT_HEADER_ALGO_VALUE;
     header.typ = JWT_HEADER_TYPE_VALUE;
 
-    internal:JwtPayload payload = {};
+    auth:JwtPayload payload = {};
     payload.iss = serviceAccount;
     payload.aud = [BASE_URL + TOKEN_ENDPOINT];
 
@@ -454,11 +455,11 @@ public remote function Client.getAccessTokenFromServiceAccount(string keyStoreLo
     payload.customClaims = customClaims;
     payload.sub = serviceAccount;
 
-    internal:JWTIssuerConfig config = {};
+    auth:JWTIssuerConfig config = {};
     config.keyAlias = KEYALIAS;
     config.keyPassword = PASSWORD;
-    config.keyStoreFilePath = keyStoreLocation;
-    config.keyStorePassword = PASSWORD;
+    crypto:KeyStore keyStore = { path: keyStoreLocation, password: PASSWORD };
+    config.keyStore = keyStore;
 
     string jwtToken = check issue(header, payload, config);
     json requestPayload = { "grant_type": GRANT_TYPE_HEADER, "assertion": jwtToken };
@@ -487,10 +488,6 @@ public remote function Client.getAccessTokenFromServiceAccount(string keyStoreLo
 
 public function Client.init(BigqueryConfiguration bigqueryConfig) {
     http:AuthConfig? authConfig = bigqueryConfig.clientConfig.auth;
-    if (authConfig is http:AuthConfig) {
-        authConfig.refreshUrl = REFRESH_URL;
-        authConfig.scheme = http:OAUTH2;
-    }
 }
 
 # BigqueryConfiguration is used to set up the Google Bigquery configuration. In order to use
