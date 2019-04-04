@@ -43,10 +43,13 @@ bigquery2:BigqueryConfiguration bigqueryConfig = {
     clientConfig: {
         auth: {
             scheme: http:OAUTH2,
-            accessToken: testAccessToken,
-            clientId: testClientId,
-            clientSecret: testClientSecret,
-            refreshToken: testRefreshToken
+            config: {
+                accessToken: testAccessToken,
+                clientId: testClientId,
+                clientSecret: testClientSecret,
+                refreshToken: testRefreshToken,
+                refreshUrl: REFRESH_URL
+            }
         }
     }
 };
@@ -86,10 +89,13 @@ bigquery2:BigqueryConfiguration bigqueryConfig = {
     clientConfig: {
         auth: {
             scheme: http:OAUTH2,
-            accessToken: config:getAsString("ACCESS_TOKEN"),
-            clientId: config:getAsString("CLIENT_ID"),
-            clientSecret: config:getAsString("CLIENT_SECRET"),
-            refreshToken: config:getAsString("REFRESH_TOKEN")
+            config: {
+                accessToken: config:getAsString("ACCESS_TOKEN"),
+                clientId: config:getAsString("CLIENT_ID"),
+                clientSecret: config:getAsString("CLIENT_SECRET"),
+                refreshToken: config:getAsString("REFRESH_TOKEN"),
+                refreshUrl: REFRESH_URL
+            }
         }
     }
 };
