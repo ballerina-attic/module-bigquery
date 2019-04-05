@@ -18,6 +18,7 @@ import ballerina/auth;
 import ballerina/crypto;
 import ballerina/http;
 import ballerina/time;
+import ballerina/io;
 
 # Bigquery Endpoint object.
 #
@@ -97,7 +98,7 @@ public type Client client object {
     # + datasetId - Dataset ID of the new table.
     # + rows - The rows to insert.vious call, to request the next page of results.
     #
-    # + return - nill on success and error on failure
+    # + return - InsertTableData object on success and error on failure
     public remote function insertAllTableData(string projectId, string datasetId, string tableId,
                                               InsertRequestData[] rows) returns InsertTableData|error ;
 
@@ -135,7 +136,7 @@ public type Client client object {
 public remote function Client.listProjects(string nextPageToken = "") returns ProjectList|error {
     string listProjectsPath = PROJECTS_PATH;
     if (nextPageToken != "") {
-        listProjectsPath = listProjectsPath + "?pageToken=" + nextPageToken;
+        listProjectsPath = string `{{listProjectsPath}}?pageToken={{nextPageToken}}`;
     }
     var httpResponse = self.bigqueryClient->get(listProjectsPath);
 
@@ -217,7 +218,7 @@ public remote function Client.listTables(string projectId, string datasetId, str
                            returns TableList|error {
     string listTablesPath = PROJECTS_PATH + "/" + projectId + "/datasets/" + datasetId + "/tables";
     if (nextPageToken != "") {
-        listTablesPath = listTablesPath + "?pageToken=" + nextPageToken;
+        listTablesPath = string `{{listTablesPath}}?pageToken={{nextPageToken}}`;
     }
     var httpResponse = self.bigqueryClient->get(listTablesPath);
 
@@ -410,7 +411,7 @@ public remote function Client.getQueryResults(string projectId, string jobId, st
                            returns @tainted QueryResults|error {
     string getQueryResultsPath = PROJECTS_PATH + "/" + projectId + "/queries/" + jobId;
     if (nextPageToken != "") {
-        getQueryResultsPath = getQueryResultsPath + "?pageToken=" + nextPageToken;
+        getQueryResultsPath = string `{{getQueryResultsPath}}?pageToken={{nextPageToken}}`;
     }
     var httpResponse = self.bigqueryClient->get(getQueryResultsPath);
 
@@ -488,6 +489,9 @@ public remote function Client.getAccessTokenFromServiceAccount(string keyStoreLo
 
 public function Client.init(BigqueryConfiguration bigqueryConfig) {
     http:AuthConfig? authConfig = bigqueryConfig.clientConfig.auth;
+    if (authConfig is http:AuthConfig) {
+        authConfig.scheme = http:OAUTH2;
+    }
 }
 
 # BigqueryConfiguration is used to set up the Google Bigquery configuration. In order to use
