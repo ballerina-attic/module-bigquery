@@ -8,7 +8,7 @@ The Bigquery connector allows you to access and run queries on Bigquery through 
 
 | Ballerina Language Version  | Bigquery API Version |
 |:---------------------------:|:--------------------:|
-|  0.990.3                    |   V2                 |
+|  0.990.4                    |   V2                 |
 
 ##### Prerequisites
 Download the Ballerina [distribution](https://ballerina.io/downloads/).
@@ -22,10 +22,12 @@ bigquery2:BigqueryConfiguration bigqueryConfig = {
     clientConfig: {
         auth: {
             scheme: http:OAUTH2,
-            accessToken: testAccessToken,
-            clientId: testClientId,
-            clientSecret: testClientSecret,
-            refreshToken: testRefreshToken
+            config: {
+                accessToken: testAccessToken,
+                clientId: testClientId,
+                clientSecret: testClientSecret,
+                refreshToken: testRefreshToken
+            }
         }
     }
 };
@@ -47,10 +49,12 @@ bigquery2:BigqueryConfiguration bigqueryConfig = {
     clientConfig: {
         auth: {
             scheme: http:OAUTH2,
-            accessToken: config:getAsString("ACCESS_TOKEN"),
-            clientId: config:getAsString("CLIENT_ID"),
-            clientSecret: config:getAsString("CLIENT_SECRET"),
-            refreshToken: config:getAsString("REFRESH_TOKEN")
+            config: {
+                accessToken: config:getAsString("ACCESS_TOKEN"),
+                clientId: config:getAsString("CLIENT_ID"),
+                clientSecret: config:getAsString("CLIENT_SECRET"),
+                refreshToken: config:getAsString("REFRESH_TOKEN")
+            }
         }
     }
 };

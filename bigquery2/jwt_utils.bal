@@ -14,8 +14,8 @@
 // specific language governing permissions and limitations
 // under the License.
 
+import ballerina/auth;
 import ballerina/encoding;
-import ballerina/internal;
 
 function addMapToJson(json inJson, map<any> mapToConvert) returns json {
     if (mapToConvert.length() != 0) {
@@ -57,14 +57,14 @@ function convertIntArrayToJson(int[] arrayToConvert) returns json {
     return jsonPayload;
 }
 
-function validateMandatoryFields(internal:JwtPayload jwtPayload) returns boolean {
+function validateMandatoryFields(auth:JwtPayload jwtPayload) returns boolean {
     if (jwtPayload.iss == "" || jwtPayload.sub == "" || jwtPayload.exp == 0 || jwtPayload.aud.length() == 0) {
         return false;
     }
     return true;
 }
 
-function validateMandatoryJwtHeaderFields(internal:JwtHeader jwtHeader) returns boolean {
+function validateMandatoryJwtHeaderFields(auth:JwtHeader jwtHeader) returns boolean {
     if (jwtHeader.alg == "") {
         return false;
     }

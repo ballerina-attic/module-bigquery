@@ -14,9 +14,9 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerina/encoding;
-import ballerina/internal;
+import ballerina/auth;
 import ballerina/crypto;
+import ballerina/encoding;
 
 # Issue a JWT token.
 #
@@ -25,15 +25,15 @@ import ballerina/crypto;
 # + config - JWTIssuerConfig object
 #
 # + return - JWT token string or an error if token validation fails
-function issue(internal:JwtHeader header, internal:JwtPayload payload, internal:JWTIssuerConfig config)
+function issue(auth:JwtHeader header, auth:JwtPayload payload, auth:JWTIssuerConfig config)
               returns string|error {
     string jwtHeader = check createHeader(header);
     string jwtPayload = check createPayload(payload);
     string jwtAssertion = jwtHeader + "." + jwtPayload;
 
     crypto:KeyStore keyStore = {
-        path: config.keyStoreFilePath,
-        password: config.keyStorePassword
+        path: config.keyStore.path,
+        password: config.keyStore.password
     };
     var privateKey = check crypto:decodePrivateKey(keyStore = keyStore, keyAlias = config.keyAlias,
         keyPassword = config.keyPassword);
@@ -57,7 +57,7 @@ function issue(internal:JwtHeader header, internal:JwtPayload payload, internal:
 # + header - JwtHeader object
 #
 # + return - Encoded JWT Header or an error if token validation fails
-function createHeader(internal:JwtHeader header) returns string|error {
+function createHeader(auth:JwtHeader header) returns string|error {
     json headerJson = {};
     if (!validateMandatoryJwtHeaderFields(header)) {
         error jwtError = error(BIGQUERY_ERROR_CODE, { message: "Mandatory field signing algorithm(alg) is empty." });
@@ -79,7 +79,7 @@ function createHeader(internal:JwtHeader header) returns string|error {
 # + payload - JwtPayload object
 #
 # + return - Encoded JWT Payload or an error if token validation fails
-function createPayload(internal:JwtPayload payload) returns string|error {
+function createPayload(auth:JwtPayload payload) returns string|error {
     json payloadJson = {};
     if (!validateMandatoryFields(payload)) {
         error jwtError = error(BIGQUERY_ERROR_CODE,
