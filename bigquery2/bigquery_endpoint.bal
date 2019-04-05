@@ -136,7 +136,7 @@ public type Client client object {
 public remote function Client.listProjects(string nextPageToken = "") returns ProjectList|error {
     string listProjectsPath = PROJECTS_PATH;
     if (nextPageToken != "") {
-        listProjectsPath = string `{{listProjectsPath}}?pageToken={{nextPageToken}}`;
+        listProjectsPath = string `${listProjectsPath}?pageToken=${nextPageToken}`;
     }
     var httpResponse = self.bigqueryClient->get(listProjectsPath);
 
@@ -162,7 +162,7 @@ public remote function Client.listProjects(string nextPageToken = "") returns Pr
 }
 
 public remote function Client.getDataset(string projectId, string datasetId) returns Dataset|error {
-    string getDatasetPath = PROJECTS_PATH + "/" + projectId + "/datasets/" + datasetId;
+    string getDatasetPath = string `${PROJECTS_PATH}/${projectId}/datasets/${datasetId}`;
     var httpResponse = self.bigqueryClient->get(getDatasetPath);
 
     if (httpResponse is http:Response) {
@@ -187,7 +187,7 @@ public remote function Client.getDataset(string projectId, string datasetId) ret
 }
 
 public remote function Client.listDatasets(string projectId, string nextPageToken = "") returns DatasetList|error {
-    string listDatasetPath = PROJECTS_PATH + "/" + projectId + "/datasets";
+    string listDatasetPath = string `${PROJECTS_PATH}/${projectId}/datasets`;
     if (nextPageToken != "") {
         listDatasetPath = listDatasetPath + QUESTION_MARK + PAGE_TOKEN_PATH +  nextPageToken;
     }
@@ -216,7 +216,7 @@ public remote function Client.listDatasets(string projectId, string nextPageToke
 
 public remote function Client.listTables(string projectId, string datasetId, string nextPageToken = "")
                            returns TableList|error {
-    string listTablesPath = PROJECTS_PATH + "/" + projectId + "/datasets/" + datasetId + "/tables";
+    string listTablesPath = string `${PROJECTS_PATH}/${projectId}/datasets/${datasetId}/tables`;
     if (nextPageToken != "") {
         listTablesPath = string `{{listTablesPath}}?pageToken={{nextPageToken}}`;
     }
@@ -245,7 +245,7 @@ public remote function Client.listTables(string projectId, string datasetId, str
 
 public remote function Client.getTable(string projectId, string datasetId, string tableId, string... selectedFields)
                            returns Table|error {
-    string getTablePath = PROJECTS_PATH + "/" + projectId + "/datasets/" + datasetId + "/tables/" + tableId;
+    string getTablePath = string `${PROJECTS_PATH}/${projectId}/datasets/${datasetId}/tables/${tableId}`;
     string uriParams = "";
     int index = 0;
     foreach string field in selectedFields {
@@ -257,7 +257,7 @@ public remote function Client.getTable(string projectId, string datasetId, strin
         index = index + 1;
     }
     if (uriParams != "") {
-        getTablePath = getTablePath + "?selectedFields=" + uriParams;
+        getTablePath = string `${getTablePath}?selectedFields=${uriParams}`;
     }
     var httpResponse = self.bigqueryClient->get(getTablePath);
     if (httpResponse is http:Response) {
@@ -284,7 +284,7 @@ public remote function Client.getTable(string projectId, string datasetId, strin
 public remote function Client.listTableData(string projectId, string datasetId, string tableId,
                                             string nextPageToken = "", string... selectedFields)
                                   returns @tainted TableData|error {
-    string listTableDataPath = PROJECTS_PATH + "/" + projectId + "/datasets/" + datasetId + "/tables/" + tableId + "/data";
+    string listTableDataPath = string `${PROJECTS_PATH}/${projectId}/datasets/${datasetId}/tables/${tableId}/data`;
     string uriParams = "";
     if (nextPageToken != "") {
         uriParams = uriParams + AND_SIGN + PAGE_TOKEN_PATH +  nextPageToken;
@@ -332,7 +332,7 @@ public remote function Client.listTableData(string projectId, string datasetId, 
 public remote function Client.insertAllTableData(string projectId, string datasetId, string tableId,
                                                  InsertRequestData[] rows) returns InsertTableData|error {
     http:Request request = new;
-    string insertDataPath = PROJECTS_PATH + "/" + projectId + "/datasets/" + datasetId + "/tables/" + tableId + "/insertAll";
+    string insertDataPath = string `${PROJECTS_PATH}/${projectId}/datasets/${datasetId}/tables/${tableId}/insertAll`;
     json jsonPayload = { "kind": "bigquery#tableDataInsertAllRequest" };
     json[] jsonRows = [];
     int i = 0;
@@ -372,7 +372,7 @@ public remote function Client.insertAllTableData(string projectId, string datase
 public remote function Client.runQuery(string projectId, @sensitive string queryString, json queryParameters = (),
                                 ParameterMode parameterMode = "POSITIONAL") returns @tainted QueryResults|error {
     http:Request request = new;
-    string getQueryResultsPath = PROJECTS_PATH + "/" + projectId + "/queries";
+    string getQueryResultsPath = string `${PROJECTS_PATH}/${projectId}/queries`;
     json jsonPayload = { "kind": "bigquery#queryRequest", "query" : queryString };
     if (queryParameters != ()) {
         jsonPayload.queryParameters = queryParameters;
@@ -409,7 +409,7 @@ public remote function Client.runQuery(string projectId, @sensitive string query
 
 public remote function Client.getQueryResults(string projectId, string jobId, string nextPageToken = "")
                            returns @tainted QueryResults|error {
-    string getQueryResultsPath = PROJECTS_PATH + "/" + projectId + "/queries/" + jobId;
+    string getQueryResultsPath = string `${PROJECTS_PATH}/${projectId}/queries/${jobId}`;
     if (nextPageToken != "") {
         getQueryResultsPath = string `{{getQueryResultsPath}}?pageToken={{nextPageToken}}`;
     }
