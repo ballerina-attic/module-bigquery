@@ -69,7 +69,7 @@ public type ProjectList record {
     Project[] projects = [];
 };
 
-# Record representing the Project to which you have at least READ access.
+# Record representing the project to which you have at least READ access.
 #
 # + id - An opaque ID of this project
 # + numericId - The numeric ID of this project
@@ -111,7 +111,7 @@ public type DatasetList record {
     Dataset[] datasets = [];
 };
 
-# Record representing the input parameters to insertAll table data.
+# Record representing the data to be inserted to a table.
 #
 # + insertId - A unique ID for each row
 # + jsonData - A JSON object that contains a row of data
@@ -156,7 +156,7 @@ public type Table record {
     Field[] fields?;
 };
 
-# Record representing the response of insertAll table data.
+# Record representing the result of an inserted data to a table operation.
 #
 # + kind - The resource type of the response
 # + insertErrors - An array of errors for rows that were not inserted

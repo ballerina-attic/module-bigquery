@@ -97,7 +97,7 @@ public type Client client object {
     # + datasetId - Dataset ID of the new table.
     # + rows - The rows to insert.vious call, to request the next page of results.
     #
-    # + return - InsertTableData object on success and error on failure
+    # + return - `InsertTableData` object on success and error on failure
     public remote function insertAllTableData(string projectId, string datasetId, string tableId,
                                               InsertRequestData[] rows) returns InsertTableData|error ;
 
