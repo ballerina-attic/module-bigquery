@@ -491,6 +491,10 @@ public function Client.init(BigqueryConfiguration bigqueryConfig) {
     http:AuthConfig? authConfig = bigqueryConfig.clientConfig.auth;
     if (authConfig is http:AuthConfig) {
         authConfig.scheme = http:OAUTH2;
+        var oAuth2Config = authConfig.config;
+        if (oAuth2Config is http:OAuth2AuthConfig) {
+            oAuth2Config.refreshUrl = REFRESH_URL;
+        }
     }
 }
 

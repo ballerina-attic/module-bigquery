@@ -12,7 +12,7 @@ The `wso2/bigquery2` module contains operations that retrieve projects, tables, 
 
 |                             |       Version               |
 |:---------------------------:|:---------------------------:|
-| Ballerina Language          | 0.990.3                     |
+| Ballerina Language          | 0.990.4                     |
 | Bigquery API Version        | V2                          |
 
 ## Sample
@@ -47,8 +47,7 @@ bigquery2:BigqueryConfiguration bigqueryConfig = {
                 accessToken: testAccessToken,
                 clientId: testClientId,
                 clientSecret: testClientSecret,
-                refreshToken: testRefreshToken,
-                refreshUrl: REFRESH_URL
+                refreshToken: testRefreshToken
             }
         }
     }
@@ -93,8 +92,7 @@ bigquery2:BigqueryConfiguration bigqueryConfig = {
                 accessToken: config:getAsString("ACCESS_TOKEN"),
                 clientId: config:getAsString("CLIENT_ID"),
                 clientSecret: config:getAsString("CLIENT_SECRET"),
-                refreshToken: config:getAsString("REFRESH_TOKEN"),
-                refreshUrl: REFRESH_URL
+                refreshToken: config:getAsString("REFRESH_TOKEN")
             }
         }
     }

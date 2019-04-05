@@ -26,8 +26,7 @@ BigqueryConfiguration bigqueryConfig = {
                 accessToken: config:getAsString("ACCESS_TOKEN"),
                 clientId: config:getAsString("CLIENT_ID"),
                 clientSecret: config:getAsString("CLIENT_SECRET"),
-                refreshToken: config:getAsString("REFRESH_TOKEN"),
-                refreshUrl: REFRESH_URL
+                refreshToken: config:getAsString("REFRESH_TOKEN")
             }
         }
     }
