@@ -14,7 +14,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-# Define the QueryResults object which contains the results of the run a BigQuery SQL query operation.
+# Record representing the results of the BigQuery SQL query operation.
 #
 # + fields - The fields in a table
 # + projectId - The ID of the project containing this job
@@ -34,7 +34,7 @@ public type QueryResults record {
     Error[] errors = [];
 };
 
-# Define the Field object. It describes the fields in a table.
+# Record representing the details of fields in a table.
 #
 # + name - The field name
 # + type - The field data type
@@ -47,7 +47,7 @@ public type Field record {
     string description?;
 };
 
-# Define the TableData object. It describes the data in a table.
+# Record representing the details of data in a table.
 #
 # + nextPageToken - A token used for paging results
 # + totalRows - The total number of rows in the complete query result set
@@ -58,7 +58,7 @@ public type TableData record {
     json[] rows = [];
 };
 
-# Define the ProjectList object. It contains all projects to which you have been granted any project role.
+# Record representing all projects to which you have been granted any project role.
 #
 # + nextPageToken - A token to request the next page of results
 # + totalItems - The total number of projects in the list
@@ -69,7 +69,7 @@ public type ProjectList record {
     Project[] projects = [];
 };
 
-# Define the Project object to which you have at least READ access.
+# Record representing the Project to which you have at least READ access.
 #
 # + id - An opaque ID of this project
 # + numericId - The numeric ID of this project
@@ -82,7 +82,7 @@ public type Project record {
     string friendlyName?;
 };
 
-# Define the Dataset. It is the dataset resource in the project.
+# Record representing the dataset resource in the project.
 #
 # + id - The fully-qualified unique name of the dataset in the format projectId:datasetId
 # + location - The geographic location where the dataset should reside
@@ -102,8 +102,7 @@ public type Dataset record {
     string description?;
 };
 
-# Define the DatasetList object. Contains all datasets in the specified project to which you have been granted the READER
-# dataset role.
+# Record representing all datasets in the specified project to which you have been granted the READER dataset role.
 #
 # + nextPageToken - A token that can be used to request the next results page
 # + datasets - An array of the dataset resources in the project
@@ -112,7 +111,7 @@ public type DatasetList record {
     Dataset[] datasets = [];
 };
 
-# Define the InsertRequestData object. Contains input parameters to insertAll table data.
+# Record representing the input parameters to insertAll table data.
 #
 # + insertId - A unique ID for each row
 # + jsonData - A JSON object that contains a row of data
@@ -121,7 +120,7 @@ public type InsertRequestData record {
     json jsonData = {};
 };
 
-# Define the TableList object. Contains all tables in the specified dataset.
+# Record representing all tables in the specified dataset.
 #
 # + nextPageToken - A token to request the next page of results
 # + tables - Tables in the requested dataset
@@ -132,7 +131,7 @@ public type TableList record {
     int totalItems = 0;
 };
 
-# Define the Table object. Represent the Table in the requested dataset.
+# Record representing the Table in the requested dataset.
 #
 # + id - An opaque ID of the table
 # + tableId - The ID of the table
@@ -157,7 +156,7 @@ public type Table record {
     Field[] fields?;
 };
 
-# Define the InsertTableData object. Represent the response of insertAll table data.
+# Record representing the response of insertAll table data.
 #
 # + kind - The resource type of the response
 # + insertErrors - An array of errors for rows that were not inserted
@@ -166,7 +165,7 @@ public type InsertTableData record {
     InsertError[] insertErrors = [];
 };
 
-# Define the InsertError object. Error information for the row that were not inserted.
+# Record representing a collection of Error information for the rows that were not inserted.
 #
 # + index - The index of the row that error applies to
 # + errors - Error information for the row indicated by the index property
@@ -175,7 +174,7 @@ public type InsertError record {
     Error[] errors = [];
 };
 
-# Define the Error object. Represent error information.
+# Record representing the error information.
 #
 # + reason - A short error code that summarizes the error
 # + location - Specifies where the error occurred, if present
