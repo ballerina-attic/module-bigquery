@@ -18,7 +18,6 @@ import ballerina/auth;
 import ballerina/crypto;
 import ballerina/http;
 import ballerina/time;
-import ballerina/io;
 
 # Bigquery Endpoint object.
 #
