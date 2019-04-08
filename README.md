@@ -8,7 +8,7 @@ The Bigquery connector allows you to access and run queries on Bigquery through 
 
 | Ballerina Language Version  | Bigquery API Version |
 |:---------------------------:|:--------------------:|
-|  0.990.4                    |   V2                 |
+|  0.991.0                    |   V2                 |
 
 ##### Prerequisites
 Download the Ballerina [distribution](https://ballerina.io/downloads/).
@@ -23,10 +23,16 @@ bigquery2:BigqueryConfiguration bigqueryConfig = {
         auth: {
             scheme: http:OAUTH2,
             config: {
-                accessToken: testAccessToken,
-                clientId: testClientId,
-                clientSecret: testClientSecret,
-                refreshToken: testRefreshToken
+                grantType: http:DIRECT_TOKEN,
+                config: {
+                    accessToken: config:getAsString("ACCESS_TOKEN"),
+                    refreshConfig: {
+                        refreshUrl: REFRESH_URL,
+                        refreshToken: config:getAsString("REFRESH_TOKEN"),
+                        clientId: config:getAsString("CLIENT_ID"),
+                        clientSecret: config:getAsString("CLIENT_SECRET")
+                    }
+                }
             }
         }
     }
@@ -50,10 +56,16 @@ bigquery2:BigqueryConfiguration bigqueryConfig = {
         auth: {
             scheme: http:OAUTH2,
             config: {
-                accessToken: config:getAsString("ACCESS_TOKEN"),
-                clientId: config:getAsString("CLIENT_ID"),
-                clientSecret: config:getAsString("CLIENT_SECRET"),
-                refreshToken: config:getAsString("REFRESH_TOKEN")
+                grantType: http:DIRECT_TOKEN,
+                config: {
+                    accessToken: config:getAsString("ACCESS_TOKEN"),
+                    refreshConfig: {
+                        refreshUrl: REFRESH_URL,
+                        refreshToken: config:getAsString("REFRESH_TOKEN"),
+                        clientId: config:getAsString("CLIENT_ID"),
+                        clientSecret: config:getAsString("CLIENT_SECRET")
+                    }
+                }
             }
         }
     }

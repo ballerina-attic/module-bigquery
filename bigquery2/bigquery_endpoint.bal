@@ -490,14 +490,6 @@ public function Client.init(BigqueryConfiguration bigqueryConfig) {
     http:AuthConfig? authConfig = bigqueryConfig.clientConfig.auth;
     if (authConfig is http:AuthConfig) {
         authConfig.scheme = http:OAUTH2;
-        var oAuth2Config = authConfig.config;
-        if (oAuth2Config is http:OAuth2AuthConfig) {
-            var directTokenConfig = oAuth2Config.config;
-            if (directTokenConfig is http:DirectTokenConfig) {
-                http:DirectTokenRefreshConfig refreshConfig = directTokenConfig.refreshConfig;
-                refreshConfig.refreshUrl = REFRESH_URL;
-            }
-        }
     }
 }
 

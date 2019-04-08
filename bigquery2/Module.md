@@ -12,7 +12,7 @@ The `wso2/bigquery2` module contains operations that retrieve projects, tables, 
 
 |                             |       Version               |
 |:---------------------------:|:---------------------------:|
-| Ballerina Language          | 0.990.4                     |
+| Ballerina Language          | 0.991.0                     |
 | Bigquery API Version        | V2                          |
 
 ## Sample
@@ -44,10 +44,16 @@ bigquery2:BigqueryConfiguration bigqueryConfig = {
         auth: {
             scheme: http:OAUTH2,
             config: {
-                accessToken: testAccessToken,
-                clientId: testClientId,
-                clientSecret: testClientSecret,
-                refreshToken: testRefreshToken
+                grantType: http:DIRECT_TOKEN,
+                config: {
+                    accessToken: config:getAsString("ACCESS_TOKEN"),
+                    refreshConfig: {
+                        refreshUrl: REFRESH_URL,
+                        refreshToken: config:getAsString("REFRESH_TOKEN"),
+                        clientId: config:getAsString("CLIENT_ID"),
+                        clientSecret: config:getAsString("CLIENT_SECRET")
+                    }
+                }
             }
         }
     }
@@ -89,10 +95,16 @@ bigquery2:BigqueryConfiguration bigqueryConfig = {
         auth: {
             scheme: http:OAUTH2,
             config: {
-                accessToken: config:getAsString("ACCESS_TOKEN"),
-                clientId: config:getAsString("CLIENT_ID"),
-                clientSecret: config:getAsString("CLIENT_SECRET"),
-                refreshToken: config:getAsString("REFRESH_TOKEN")
+                grantType: http:DIRECT_TOKEN,
+                config: {
+                    accessToken: config:getAsString("ACCESS_TOKEN"),
+                    refreshConfig: {
+                        refreshUrl: REFRESH_URL,
+                        refreshToken: config:getAsString("REFRESH_TOKEN"),
+                        clientId: config:getAsString("CLIENT_ID"),
+                        clientSecret: config:getAsString("CLIENT_SECRET")
+                    }
+                }
             }
         }
     }

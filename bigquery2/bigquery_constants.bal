@@ -16,7 +16,7 @@
 
 // API urls.
 const string BASE_URL = "https://www.googleapis.com";
-const string REFRESH_URL = "https://www.googleapis.com/oauth2/v3/token";
+public const string REFRESH_URL = "https://www.googleapis.com/oauth2/v3/token";
 const string PROJECTS_PATH = "/bigquery/v2/projects";
 const string DATASETS_PATH = "/datasets";
 const string TABLES_PATH = "/tables";
