@@ -23,10 +23,16 @@ BigqueryConfiguration bigqueryConfig = {
         auth: {
             scheme: http:OAUTH2,
             config: {
-                accessToken: config:getAsString("ACCESS_TOKEN"),
-                clientId: config:getAsString("CLIENT_ID"),
-                clientSecret: config:getAsString("CLIENT_SECRET"),
-                refreshToken: config:getAsString("REFRESH_TOKEN")
+                grantType: http:DIRECT_TOKEN,
+                config: {
+                    accessToken: config:getAsString("ACCESS_TOKEN"),
+                    refreshConfig: {
+                        refreshUrl: REFRESH_URL,
+                        refreshToken: config:getAsString("REFRESH_TOKEN"),
+                        clientId: config:getAsString("CLIENT_ID"),
+                        clientSecret: config:getAsString("CLIENT_SECRET")
+                    }
+                }
             }
         }
     }

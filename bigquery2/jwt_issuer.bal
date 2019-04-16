@@ -65,10 +65,7 @@ function createHeader(auth:JwtHeader header) returns string|error {
     }
     headerJson[ALG] = header.alg;
     headerJson[TYP] = header.typ;
-    var customClaims = header["customClaims"];
-    if (customClaims is map<any>) {
-        headerJson = addMapToJson(headerJson, customClaims);
-    }
+
     string headerValInString = headerJson.toString();
     string encodedPayload = encoding:encodeBase64(headerValInString.toByteArray("UTF-8"));
     return encodedPayload;

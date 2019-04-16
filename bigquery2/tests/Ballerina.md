@@ -2,7 +2,7 @@
 
 | Ballerina Language Version  | Bigquery API Version |
 | ----------------------------| -------------------------------|
-|  0.990.4                    |   V2                           |
+|  0.991.0                    |   V2                           |
 
 ### Prerequisites
 
