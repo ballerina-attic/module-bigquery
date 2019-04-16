@@ -27,14 +27,8 @@ public type Client client object {
     public http:Client bigqueryClient;
 
     public function __init(BigqueryConfiguration bigqueryConfig) {
-        self.init(bigqueryConfig);
         self.bigqueryClient = new(BASE_URL, config = bigqueryConfig.clientConfig);
     }
-
-    # Initialize Bigquery endpoint.
-    #
-    # + bigqueryConfig - Bigquery configuraion
-    public function init(BigqueryConfiguration bigqueryConfig);
 
     # Lists all projects to which current user have been granted any project role.
     #
@@ -483,13 +477,6 @@ public remote function Client.getAccessTokenFromServiceAccount(string keyStoreLo
     } else {
         error err = error(BIGQUERY_ERROR_CODE, { message: httpResponse.detail().message });
         return err;
-    }
-}
-
-public function Client.init(BigqueryConfiguration bigqueryConfig) {
-    http:AuthConfig? authConfig = bigqueryConfig.clientConfig.auth;
-    if (authConfig is http:AuthConfig) {
-        authConfig.scheme = http:OAUTH2;
     }
 }
 
