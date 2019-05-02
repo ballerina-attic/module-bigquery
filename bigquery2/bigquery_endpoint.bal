@@ -87,13 +87,18 @@ public type Client client object {
 
     #  Streams data into BigQuery one record at a time without needing to run a load job.
     #
-    # + projectId - Project ID of the new table.
-    # + datasetId - Dataset ID of the new table.
-    # + rows - The rows to insert.vious call, to request the next page of results.
+    # + projectId - Project ID of the destination table.
+    # + datasetId - Dataset ID of the destination table.
+    # + tableId - Table ID of the destination table.
+    # + templateSuffix - If specified, treats the destination table as a base template, and inserts the rows into an
+    #                    instance table named "{destination}{templateSuffix}". BigQuery will manage creation of the
+    #                    instance table, using the schema of the base template table.
+    # + rows - The rows to insert.
     #
     # + return - `InsertTableData` object on success and error on failure
     public remote function insertAllTableData(string projectId, string datasetId, string tableId,
-                                              InsertRequestData[] rows) returns InsertTableData|error ;
+                                              string? templateSuffix = (), InsertRequestData[] rows)
+                               returns InsertTableData|error ;
 
     #  Runs a BigQuery SQL query and returns results if the query completes within a specified timeout.
     #
@@ -323,7 +328,8 @@ public remote function Client.listTableData(string projectId, string datasetId, 
 }
 
 public remote function Client.insertAllTableData(string projectId, string datasetId, string tableId,
-                                                 InsertRequestData[] rows) returns InsertTableData|error {
+                                                 string? templateSuffix = (), InsertRequestData[] rows)
+                                  returns InsertTableData|error {
     http:Request request = new;
     string insertDataPath = string `${PROJECTS_PATH}/${projectId}/datasets/${datasetId}/tables/${tableId}/insertAll`;
     json jsonPayload = { "kind": "bigquery#tableDataInsertAllRequest" };
@@ -339,6 +345,9 @@ public remote function Client.insertAllTableData(string projectId, string datase
         i = i + 1;
     }
     jsonPayload.rows = jsonRows;
+    if (templateSuffix is string) {
+        jsonPayload.templateSuffix = templateSuffix;
+    }
     request.setJsonPayload(untaint jsonPayload);
     var httpResponse = self.bigqueryClient->post(insertDataPath, request);
 
