@@ -97,7 +97,7 @@ public type Client client object {
     #
     # + return - `InsertTableData` object on success and error on failure
     public remote function insertAllTableData(string projectId, string datasetId, string tableId,
-                                              string? templateSuffix = (), InsertRequestData[] rows)
+                                              InsertRequestData[] rows, string? templateSuffix = ())
                                returns InsertTableData|error ;
 
     #  Runs a BigQuery SQL query and returns results if the query completes within a specified timeout.
@@ -328,7 +328,7 @@ public remote function Client.listTableData(string projectId, string datasetId, 
 }
 
 public remote function Client.insertAllTableData(string projectId, string datasetId, string tableId,
-                                                 string? templateSuffix = (), InsertRequestData[] rows)
+                                                 InsertRequestData[] rows, string? templateSuffix = ())
                                   returns InsertTableData|error {
     http:Request request = new;
     string insertDataPath = string `${PROJECTS_PATH}/${projectId}/datasets/${datasetId}/tables/${tableId}/insertAll`;
