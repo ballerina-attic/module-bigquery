@@ -90,10 +90,10 @@ public type Client client object {
     # + projectId - Project ID of the destination table.
     # + datasetId - Dataset ID of the destination table.
     # + tableId - Table ID of the destination table.
+    # + rows - The rows to insert.
     # + templateSuffix - If specified, treats the destination table as a base template, and inserts the rows into an
     #                    instance table named "{destination}{templateSuffix}". BigQuery will manage creation of the
     #                    instance table, using the schema of the base template table.
-    # + rows - The rows to insert.
     #
     # + return - `InsertTableData` object on success and error on failure
     public remote function insertAllTableData(string projectId, string datasetId, string tableId,
