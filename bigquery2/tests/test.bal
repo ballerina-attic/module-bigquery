@@ -44,6 +44,7 @@ string runQueryProjectId = "scenarios-180306";
 string datasetId = "samples";
 string tableId = "shakespeare";
 string jobId = "";
+string serviceAccountAccessToken = "";
 
 @test:Config
 function testListProjects() {
@@ -117,17 +118,46 @@ function testGetTable() {
     }
 }
 
-@test:Config
+@test:Config {
+    dependsOn: ["testGetAccessTokenFromServiceAccount"]
+}
 function testInsertAllTableData() {
     io:println("-----------------Test case for insertAllTableData method------------------");
-    InsertRequestData[] insertRequestData = [{jsonData : {"testKey" : "testVal"}}];
-    var bigqueryRes = bigqueryClient->insertAllTableData(projectId, datasetId, tableId, insertRequestData);
+    if (serviceAccountAccessToken == "") {
+        test:assertFail(msg = "Invalid access token value found.");
+    }
+
+    Client bigqueryClientWithServiceAccount = new({
+        clientConfig: {
+            auth: {
+                scheme: http:OAUTH2,
+                config: {
+                    grantType: http:DIRECT_TOKEN,
+                    config: {
+                        accessToken: serviceAccountAccessToken
+                    }
+                }
+            }
+        }
+    });
+
+    InsertRequestData[] insertRequestData = [{jsonData : {"SOURCE_ID":"2", "DESTINATION_ID":"13",
+        "SIGNAL_TYPE_ID":"13", "DATA":"SampleData", "TRANSACTION_TIMESTAMP":"2014-03-01T22:12:22.000Z",
+        "BQ_INSERT_TIMESTAMP":"2016-02-26 20:12:01"}}];
+    string serviceAccountProjectId = "dataservices";
+    string serviceAccountDatasetId = "staging";
+    string serviceAccountTableId = "TEST_LOGGER";
+    string suffix = "_sample";
+
+    var bigqueryRes = bigqueryClientWithServiceAccount->insertAllTableData(serviceAccountProjectId,
+        serviceAccountDatasetId, serviceAccountTableId, insertRequestData, templateSuffix = suffix);
     if (bigqueryRes is error) {
         io:println("Error: ",  bigqueryRes);
         test:assertFail(msg = <string>bigqueryRes.detail().message);
     } else {
         io:println("Insert TableData Response: ",  bigqueryRes);
-        test:assertNotEquals(bigqueryRes, (), msg = "Failed to insert table data");
+        test:assertTrue(bigqueryRes.kind.contains("bigquery#tableDataInsertAllResponse"),
+            msg = "Failed to insert table data");
     }
 }
 
@@ -169,6 +199,7 @@ function testGetAccessTokenFromServiceAccount() {
     var bigqueryRes = bigqueryClient->getAccessTokenFromServiceAccount(keyStoreLocation, serviceAccount, scope);
     if (bigqueryRes is json) {
         io:println("Access token Details: ", bigqueryRes);
+        serviceAccountAccessToken = io:sprintf("%s", bigqueryRes.access_token);
         test:assertNotEquals(bigqueryRes, (), msg = "Failed to get access token from the service account.");
     } else {
         test:assertFail(msg = <string>bigqueryRes.detail().message);
