@@ -34,7 +34,7 @@ public type Client client object {
     #
     # + nextPageToken - Page token, returned by a previous call, to request the next page of results.
     #
-    # + return - ProjectList object on success and error on failure
+    # + return - Returns the `ProjectList` object when successful. Else, returns an error.
     public remote function listProjects(string nextPageToken = "") returns ProjectList|error;
 
     # Returns the dataset specified by datasetID.
@@ -42,7 +42,7 @@ public type Client client object {
     # + projectId - Project ID of the requested dataset.
     # + datasetId - Dataset ID of the requested dataset.
     #
-    # + return - Dataset object on success and error on failure
+    # + return - Returns the `Dataset` object when successful. Else, returns an error.
     public remote function getDataset(string projectId, string datasetId) returns Dataset|error;
 
     #  Lists all datasets in the specified project to which user have been granted the READER dataset role.
@@ -50,7 +50,7 @@ public type Client client object {
     # + projectId - Project ID of the requested dataset.
     # + nextPageToken - Page token, returned by a previous call, to request the next page of results.
     #
-    # + return - DatasetList object on success and error on failure
+    # + return - Returns the `DatasetList` object when successful. Else, returns an error.
     public remote function listDatasets(string projectId, string nextPageToken = "") returns DatasetList|error;
 
     #  Lists all tables in the specified dataset.
@@ -59,7 +59,7 @@ public type Client client object {
     # + datasetId - Dataset ID of the table to read.
     # + nextPageToken - Page token, returned by a previous call, to request the next page of results.
     #
-    # + return - TableList object on success and error on failure
+    # + return - Returns the `TableList` object when successful. Else, returns an error.
     public remote function listTables(string projectId, string datasetId, string nextPageToken = "") returns TableList|
                                                                                                                  error;
     #  Gets the specified table resource by table ID.
@@ -69,7 +69,7 @@ public type Client client object {
     # + tableId - Table ID of the table to read.
     # + selectedFields - List of fields to return.
     #
-    # + return - TableList object on success and error on failure
+    # + return - Returns the `TableList` object when successful. Else, returns an error.
     public remote function getTable(string projectId, string datasetId, string tableId, string... selectedFields)
                                returns Table|error;
 
@@ -81,7 +81,7 @@ public type Client client object {
     # + nextPageToken - Page token, returned by a previous call, to request the next page of results.
     # + selectedFields - List of fields to return.
     #
-    # + return - TableData object on success and error on failure
+    # + return - Returns the `TableData` object when successful. Else, returns an error.
     public remote function listTableData(string projectId, string datasetId, string tableId, string nextPageToken = "",
                                          string... selectedFields) returns @tainted TableData|error;
 
@@ -95,7 +95,7 @@ public type Client client object {
     #                    instance table named "{destination}{templateSuffix}". BigQuery will manage creation of the
     #                    instance table, using the schema of the base template table.
     #
-    # + return - `InsertTableData` object on success and error on failure
+    # + return - Returns the `InsertTableData` object when successful. Else, returns an error.
     public remote function insertAllTableData(string projectId, string datasetId, string tableId,
                                               InsertRequestData[] rows, string? templateSuffix = ())
                                returns InsertTableData|error ;
@@ -107,7 +107,7 @@ public type Client client object {
     # + queryParameters - Query parameters for Standard SQL queries.
     # + parameterMode - Query parameters for Standard SQL queries.
     #
-    # + return - QueryResults object on success and error on failure
+    # + return - Returns the `QueryResults` object when successful. Else, returns an error.
     public remote function runQuery(string projectId, @sensitive string queryString, json queryParameters = (),
                                     ParameterMode parameterMode = "POSITIONAL") returns @tainted QueryResults|error;
 
@@ -117,7 +117,7 @@ public type Client client object {
     # + jobId - Job ID of the query job.
     # + nextPageToken - Page token, returned by a previous call, to request the next page of results.
     #
-    # + return - QueryResults object on success and error on failure
+    # + return - Returns the `QueryResults` object when successful. Else, returns an error.
     public remote function getQueryResults(string projectId, string jobId, string nextPageToken = "")
                                returns @tainted QueryResults|error;
 
@@ -126,7 +126,7 @@ public type Client client object {
     # + keyStoreLocation - The location where the p12 key file is located.
     # + serviceAccount - The value of the service Account.
     # + scope - The scope to access the API.
-    # + return - Accesstoken details as a json on success and error on failure
+    # + return - Returns the details of the access token as a JSON when successful. Else, returns an error.
     public remote function getAccessTokenFromServiceAccount(string keyStoreLocation, string serviceAccount,
                                                             string scope) returns @tainted json|error;
 };
@@ -492,7 +492,7 @@ public remote function Client.getAccessTokenFromServiceAccount(string keyStoreLo
 # BigqueryConfiguration is used to set up the Google Bigquery configuration. In order to use
 # this Connector, you need to provide the oauth2 credentials.
 #
-# + clientConfig - The HTTP client congiguration
+# + clientConfig - The HTTP client configuration.
 public type BigqueryConfiguration record {
     http:ClientEndpointConfig clientConfig = {};
 };
