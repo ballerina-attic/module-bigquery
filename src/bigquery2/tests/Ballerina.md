@@ -1,12 +1,12 @@
 ## Compatibility
 
-| Ballerina Language Version  | Bigquery API Version |
-| ----------------------------| -------------------------------|
-|  0.991.0                    |   V2                           |
+| Ballerina Language Version  | BigQuery API Version |
+|:---------------------------:|:--------------------:|
+|  1.0.0                    |   V2                 |
 
 ### Prerequisites
 
-1. Create a project and create an app for this project by visiting [Bigquery](https://console.developers.google.com/).
+1. Create a project and create an app for this project by visiting [BigQuery](https://console.developers.google.com/).
 2. Obtain the following parameters
     * Client Id
     * Client Secret
@@ -17,7 +17,7 @@
     **IMPORTANT** This access token and refresh token can be used to make API requests on your own
     account's behalf. Do not share your access token, client  secret with anyone.
 
-See the [topic on OAuth2Webserver](https://developers.google.com/identity/protocols/OAuth2WebServer) for more information on obtaining OAuth2 credentials.
+See the topic on [OAuth2Webserver](https://developers.google.com/identity/protocols/OAuth2WebServer) for more information on obtaining OAuth2 credentials.
 
 ## Running Samples
 You can use the `tests.bal` file to test all the connector remote functions by following the steps below:
@@ -32,6 +32,5 @@ You can use the `tests.bal` file to test all the connector remote functions by f
 3. Navigate to the folder `module-bigquery`.
 4. Run the following commands to execute the tests.
     ```
-    ballerina init
-    ballerina test bigquery2 --config ballerina.conf
+    ballerina test bigquery2 --b7a.config.file=<path_to_ballerina.conf>
     ```

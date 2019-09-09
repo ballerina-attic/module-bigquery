@@ -14,13 +14,13 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerina/file;
-
 function convertToProjectsList(json jsonProjectList) returns ProjectList {
     ProjectList projectList = {};
     projectList.nextPageToken = jsonProjectList.nextPageToken != null ? jsonProjectList.nextPageToken.toString() : "";
     projectList.projects = jsonProjectList.projects != null ? convetToProjects(<json[]>jsonProjectList.projects) : [];
-    projectList.totalItems = convertToInt(jsonProjectList.totalItems);
+    if (jsonProjectList.totalItems is int) {
+        projectList.totalItems = <int>jsonProjectList.totalItems;
+    }
     return projectList;
 }
 
@@ -37,7 +37,9 @@ function convetToProjects(json[] jsonProjects) returns Project[] {
 function convetToProject(json jsonProject) returns Project {
     Project project = {};
     project.id = jsonProject.id.toString();
-    project.numericId = convertToFloat(jsonProject.numericId.toString());
+    if (jsonProject.numericId is float) {
+        project.numericId = <float>jsonProject.numericId;
+    }
     project.projectId = jsonProject.projectReference.projectId.toString();
     project.friendlyName = jsonProject.friendlyName.toString();
     return project;
@@ -66,54 +68,22 @@ function convertToDataset(json jsonDataset) returns Dataset {
     dataset.projectId = jsonDataset.datasetReference.projectId != null ?
     jsonDataset.datasetReference.projectId.toString() : "";
     dataset.datasetId = jsonDataset.datasetReference.datasetId.toString();
-    dataset.creationTime = jsonDataset.creationTime != null ? convertToInt(jsonDataset.creationTime.toString()) : 0;
-    dataset.lastModifiedTime = jsonDataset.lastModifiedTime != null ?
-    convertToInt(jsonDataset.lastModifiedTime.toString()) : 0;
+    if (jsonDataset.creationTime is int) {
+        dataset.creationTime = jsonDataset.creationTime != null ? <int>jsonDataset.creationTime : 0;
+    }
+    if (jsonDataset.lastModifiedTime is int) {
+        dataset.lastModifiedTime = jsonDataset.lastModifiedTime != null ? <int>jsonDataset.lastModifiedTime : 0;
+    }
     dataset.location = jsonDataset.location != null ? jsonDataset.location.toString() : "";
     return dataset;
-}
-
-function convertToQueryResuls(json jsonQueryResults) returns QueryResults {
-    QueryResults queryResults = {};
-    return queryResults;
-}
-
-function convertToInt(json jsonVal) returns int {
-    string stringVal = jsonVal.toString();
-    if (stringVal != "") {
-        var intVal = int.convert(stringVal);
-        if (intVal is int) {
-            return intVal;
-        } else {
-            error err = error(BIGQUERY_ERROR_CODE,
-            { message: "Error occurred when converting " + stringVal + " to int" });
-            panic err;
-        }
-    } else {
-        return 0;
-    }
-}
-
-function convertToFloat(json jsonVal) returns float {
-    string stringVal = jsonVal.toString();
-    if (stringVal != "") {
-        var floatVal = float.convert(stringVal);
-        if (floatVal is float) {
-            return floatVal;
-        } else {
-            error err = error(BIGQUERY_ERROR_CODE,
-            { message: "Error occurred when converting " + stringVal + " to float" });
-            panic err;
-        }
-    } else {
-        return 0;
-    }
 }
 
 function convertToTableData(json jsonTableData) returns TableData {
     TableData tableData = {};
     tableData.nextPageToken = jsonTableData.nextPageToken != null ? jsonTableData.nextPageToken.toString() : "";
-    tableData.totalRows = jsonTableData.totalRows != null ? convertToInt(jsonTableData.totalRows) : 0;
+    if (jsonTableData.totalRows is int) {
+        tableData.totalRows = jsonTableData.totalRows != null ? <int>jsonTableData.totalRows : 0;
+    }
     tableData.rows = jsonTableData.rows != null ? <json[]>jsonTableData.rows : [];
     return tableData;
 }
@@ -131,8 +101,12 @@ function convertToInsertError(json[] jsonInsertErrors) returns InsertError[] {
     InsertError[] insertErrors = [];
     InsertError insertError = {};
     foreach json jsonInsertError in jsonInsertErrors {
-        insertError.index = jsonInsertError.index != null ? convertToInt(jsonInsertError.index) : 0;
-        insertError.errors = jsonInsertError.errors != null ? convertToErrors(<json[]>jsonInsertError.errors) : [];
+        if (jsonInsertError.index is int) {
+            insertError.index = jsonInsertError.index != null ? <int>jsonInsertError.index : 0;
+        }
+        if (jsonInsertError.errors is json[]) {
+            insertError.errors = jsonInsertError.errors != null ? convertToErrors(<json[]>jsonInsertError.errors) : [];
+        }
         insertErrors[i] = insertError;
         i = i + 1;
     }
@@ -157,7 +131,9 @@ function convertToErrors(json[] jsonErrors) returns Error[] {
 function convertToTableList(json jsonTableList) returns TableList {
     TableList tableList = {};
     tableList.nextPageToken = jsonTableList.nextPageToken != null ? jsonTableList.nextPageToken.toString() : "";
-    tableList.totalRows = jsonTableList.totalRows != null ? convertToInt(jsonTableList.totalRows) : 0;
+    if (jsonTableList.totalRows is int) {
+        tableList["totalRows"] = jsonTableList.totalRows != null ? <int>jsonTableList.totalRows : 0;
+    }
     tableList.tables = jsonTableList.tables != null ? convertToTables(<json[]>jsonTableList.tables) : [];
     return tableList;
 }
@@ -166,27 +142,33 @@ function convertToTables(json[] jsonTables) returns Table[] {
     int i = 0;
     Table[] tables = [];
     foreach json jsonTable in jsonTables {
-        tables[i] = convertToTable(jsonTable);
+        tables[i] = convertToTable(<map<json>>jsonTable);
         i = i + 1;
     }
     return tables;
 }
 
-function convertToTable(json jsonTable) returns Table {
+function convertToTable(map<json> jsonTable) returns Table {
     Table tableRecord = {};
     tableRecord.id = jsonTable.id.toString();
     tableRecord.tableId = jsonTable.tableReference.tableId.toString();
     tableRecord.projectId = jsonTable.tableReference.projectId.toString();
     tableRecord.datasetId = jsonTable.tableReference.datasetId.toString();
     tableRecord.description = jsonTable.description != null ? jsonTable.description.toString() : "";
-    tableRecord.^"type" = jsonTable["type"] != null ? jsonTable["type"].toString() : "";
-    tableRecord.creationTime = jsonTable.creationTime != null ? convertToInt(jsonTable.creationTime.toString()) : 0;
-    tableRecord.lastModifiedTime = jsonTable.lastModifiedTime != null ?
-                convertToInt(jsonTable.lastModifiedTime.toString()) : 0;
-    tableRecord.expirationTime = jsonTable.expirationTime != null ?
-                convertToInt(jsonTable.expirationTime.toString()) : 0;
-    tableRecord.fields = jsonTable.schema != null && jsonTable.schema.fields != null ?
-                convertToFields(<json[]>jsonTable.schema.fields) : [];
+    tableRecord.'type = jsonTable.'type != null ? jsonTable["type"].toString() : "";
+    if (jsonTable.creationTime is int) {
+        tableRecord.creationTime = jsonTable.creationTime != null ? <int>jsonTable.creationTime : 0;
+    }
+    if (jsonTable.lastModifiedTime is int) {
+        tableRecord.lastModifiedTime = jsonTable.lastModifiedTime != null ? <int>jsonTable.lastModifiedTime : 0;
+    }
+    if (jsonTable.expirationTime is int) {
+        tableRecord.expirationTime = jsonTable.expirationTime != null ? <int>jsonTable.expirationTime : 0;
+    }
+    if (jsonTable.schema.fields is json[]) {
+        tableRecord.fields = jsonTable.schema != null && jsonTable.schema.fields != null ?
+            convertToFields(<json[]>jsonTable.schema.fields) : [];
+    }
     return tableRecord;
 }
 
@@ -194,16 +176,16 @@ function convertToFields(json[] jsonFields) returns Field[] {
     int i = 0;
     Field[] fields = [];
     foreach json jsonField in jsonFields {
-        fields[i] = convertToField(jsonField);
+        fields[i] = convertToField(<map<json>>jsonField);
         i = i + 1;
     }
     return fields;
 }
 
-function convertToField(json jsonField) returns Field {
+function convertToField(map<json> jsonField) returns Field {
     Field field = {};
     field.name = jsonField.name.toString();
-    field.^"type" = jsonField["type"] != null ? jsonField["type"].toString() : "";
+    field.'type = jsonField.'type != null ? jsonField["type"].toString() : "";
     field.mode = jsonField.mode != null ? jsonField.mode.toString() : "";
     field.description = jsonField.description != null ? jsonField.description.toString() : "";
     return field;
@@ -214,12 +196,16 @@ function convertToQueryResults(json jsonQueryResults) returns QueryResults {
     queryResults.projectId = jsonQueryResults.jobReference.projectId.toString();
     queryResults.jobId = jsonQueryResults.jobReference.jobId.toString();
     queryResults.location = jsonQueryResults.jobReference.location != null
-                ? jsonQueryResults.jobReference.location.toString() : "";
-    queryResults.fields = jsonQueryResults.schema != null && jsonQueryResults.schema.fields != null ?
-                convertToFields(<json[]>jsonQueryResults.schema.fields) : [];
+        ? jsonQueryResults.jobReference.location.toString() : "";
+    if (jsonQueryResults.schema.fields is json[]) {
+        queryResults.fields = jsonQueryResults.schema != null && jsonQueryResults.schema.fields != null ?
+            convertToFields(<json[]>jsonQueryResults.schema.fields) : [];
+    }
     queryResults.jobComplete = jsonQueryResults.jobComplete != null ?
-                boolean.convert(jsonQueryResults.jobComplete.toString()) : false;
+        getBoolean(jsonQueryResults.jobComplete.toString()) : false;
     queryResults.tableData = convertToTableData(jsonQueryResults);
-    queryResults.errors = jsonQueryResults.errors != null ? convertToErrors(<json[]>jsonQueryResults.errors) : [];
+    if (jsonQueryResults.errors is json[]) {
+        queryResults.errors = jsonQueryResults.errors != null ? convertToErrors(<json[]>jsonQueryResults.errors) : [];
+    }
     return queryResults;
 }

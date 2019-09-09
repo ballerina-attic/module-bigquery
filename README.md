@@ -1,83 +1,74 @@
 [![Build Status](https://travis-ci.org/wso2-ballerina/module-bigquery.svg?branch=master)](https://travis-ci.org/wso2-ballerina/module-bigquery)
 
-# Ballerina Bigquery Endpoint
+# Ballerina BigQuery Connector
 
-The Bigquery connector allows you to access and run queries on Bigquery through the Bigquery REST API.
+The Ballerina BigQuery connector provides the capability to access and run queries on BigQuery through the BiQquery REST API.
 
-### Compatibility
+The following sections provide you with information on how to use the Ballerina BigQuery Connector.
 
-| Ballerina Language Version  | Bigquery API Version |
+- [Compatibility](#compatibility)
+- [Getting Started](#getting-started)
+- [Sample](#sample)
+
+## Compatibility
+
+| Ballerina Language Version  | BigQuery API Version |
 |:---------------------------:|:--------------------:|
-|  0.991.0                    |   V2                 |
+|  1.0.0                    |   V2                 |
 
-##### Prerequisites
-Download the Ballerina [distribution](https://ballerina.io/downloads/).
+## Getting Started
 
-## Working with Bigquery Endpoint remote functions
+### Prerequisites
+Download and install the Ballerina [distribution](https://ballerina.io/downloads/).
+
+### Working with BigQuery Connector
 All the remote functions return valid responses or errors. If the remote function successfully completes, then the requested resource is returned. If not, an 'error' is returned.
 
-Create a Bigquery Client endpoint to use the Bigquery Endpoint.
+Create a BigQuery Client endpoint to use the BigQuery Connector.
 ```ballerina
-bigquery2:BigqueryConfiguration bigqueryConfig = {
-    clientConfig: {
-        auth: {
-            scheme: http:OAUTH2,
-            config: {
-                grantType: http:DIRECT_TOKEN,
-                config: {
-                    accessToken: config:getAsString("ACCESS_TOKEN"),
-                    refreshConfig: {
-                        refreshUrl: bigquery2:REFRESH_URL,
-                        refreshToken: config:getAsString("REFRESH_TOKEN"),
-                        clientId: config:getAsString("CLIENT_ID"),
-                        clientSecret: config:getAsString("CLIENT_SECRET")
-                    }
-                }
-            }
+bigquery2:BigQueryConfiguration bigQueryConfig = {
+    oauthClientConfig: {
+        accessToken: config:getAsString("ACCESS_TOKEN"),
+        refreshConfig: {
+            refreshUrl: bigquery2:REFRESH_URL,
+            refreshToken: config:getAsString("REFRESH_TOKEN"),
+            clientId: config:getAsString("CLIENT_ID"),
+            clientSecret: config:getAsString("CLIENT_SECRET")
         }
     }
 };
 
-bigquery2:Client bigqueryClient = new(bigqueryConfig);
+bigquery2:Client bigQueryClient = new(bigQueryConfig);
 ```
-Then the endpoint remote function can be invoked using `var response = bigqueryClient->functionName(arguments)`. For example, **listProjects** function can be invoked as **var projectList = bigqueryClient->listProjects()**.
+Then the endpoint remote function can be invoked using `var response = bigQueryClient->functionName(arguments)`. For example, **listProjects** function can be invoked as **var projectList = bigQueryClient->listProjects()**.
 
-#### Sample
+## Sample
 ```ballerina
-import wso2/bigquery2;
-
 import ballerina/config;
 import ballerina/http;
 import ballerina/io;
+import wso2/bigquery2;
 
-// Create the Bigquery configuration.
-bigquery2:BigqueryConfiguration bigqueryConfig = {
-    clientConfig: {
-        auth: {
-            scheme: http:OAUTH2,
-            config: {
-                grantType: http:DIRECT_TOKEN,
-                config: {
-                    accessToken: config:getAsString("ACCESS_TOKEN"),
-                    refreshConfig: {
-                        refreshUrl: bigquery2:REFRESH_URL,
-                        refreshToken: config:getAsString("REFRESH_TOKEN"),
-                        clientId: config:getAsString("CLIENT_ID"),
-                        clientSecret: config:getAsString("CLIENT_SECRET")
-                    }
-                }
-            }
+// Create the BigQuery configuration.
+bigquery2:BigQueryConfiguration bigQueryConfig = {
+    oauthClientConfig: {
+        accessToken: config:getAsString("ACCESS_TOKEN"),
+        refreshConfig: {
+            refreshUrl: bigquery2:REFRESH_URL,
+            refreshToken: config:getAsString("REFRESH_TOKEN"),
+            clientId: config:getAsString("CLIENT_ID"),
+            clientSecret: config:getAsString("CLIENT_SECRET")
         }
     }
 };
 
-// Create the Bigquery client.
-bigquery2:Client bigqueryClient = new(bigqueryConfig);
+// Create the BigQuery client.
+bigquery2:Client bigQueryClient = new(bigQueryConfig);
 
 public function main() {
 
     // Invoke the listProjects remote function to list the projects.
-    var listProjectsResponse = bigqueryClient->listProjects();
+    var listProjectsResponse = bigQueryClient->listProjects();
     if (listProjectsResponse is bigquery2:ProjectList) {
         io:print("Projects: ", listProjectsResponse);
     } else {
@@ -87,6 +78,6 @@ public function main() {
 }
 ```
 
-##### Contributing to Ballerina Bigquery Endpoint
+## Contributing to Ballerina BigQuery Connector
 Clone the repository by running the following command:
 `git clone https://github.com/wso2-ballerina/module-bigquery.git`
