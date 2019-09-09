@@ -42,7 +42,7 @@ public type QueryResults record {
 # + description - The field description
 public type Field record {
     string name = "";
-    string ^"type"?;
+    string 'type?;
     string mode?;
     string description?;
 };
@@ -149,7 +149,7 @@ public type Table record {
     string datasetId = "";
     string projectId = "";
     string description?;
-    string ^"type" = "";
+    string 'type = "";
     int creationTime?;
     int expirationTime?;
     int lastModifiedTime?;
